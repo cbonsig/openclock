@@ -1,0 +1,33 @@
+#######################################
+# Syntax Coloring Map For HT1632C
+#######################################
+
+#######################################
+# Datatypes (KEYWORD1)
+#######################################
+
+ht1632c			KEYWORD1
+
+#######################################
+# Methods and Functions (KEYWORD2)
+#######################################
+
+pwm			KEYWORD2
+plot			KEYWORD2
+putchar			KEYWORD2
+hscrolltext		KEYWORD2
+vscrolltext		KEYWORD2
+bezier			KEYWORD2
+line			KEYWORD2
+circle			KEYWORD2
+ellipse			KEYWORD2
+rect			KEYWORD2
+fill			KEYWORD2
+getpixel		KEYWORD2
+setfont			KEYWORD2
+putbitmap		KEYWORD2
+profile			KEYWORD2
+
+#######################################
+# Constants (LITERAL1)
+#######################################
