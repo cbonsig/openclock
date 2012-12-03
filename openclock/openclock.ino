@@ -84,10 +84,6 @@
     char dig[6]  = "01234";
     char msg[10] = "012345678";
     
-    int dispHour = 10;
-    int dispMin = 0;
-    int dispAMPM = 0;
-    
     int nowHour12 = 0;
     int nowHour24 = 0;
     int nowMinute = 0;
@@ -137,8 +133,13 @@
           nowHour12 = nowHour24 - 12;
           nowPM = 1;
         }
-        else nowPM = 0;
-        if (nowHour24 == 12) nowPM = 1;        
+        else{
+          nowHour12 = nowHour24;
+          nowPM = 0;
+        }
+        
+        if (nowHour24 == 12) nowPM = 1;   
+        
         nowMinute = now.minute();
         
         dispHour24 = nowHour24;
@@ -533,12 +534,14 @@
         timer.disable(menuTimer);
         menuItem = 0; // return menu to default        
         
+        
+        /*
         // temporary for testing
         DateTime now = RTC.now();    
         dispHour = now.hour();
         dispMin = now.minute();
         if (dispHour > 12) dispHour = dispHour - 12;
-
+        */
         
     }
         
