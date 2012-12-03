@@ -17,11 +17,19 @@
     #include <Chronodot.h> // http://planetstephanie.net/2011/12/01/chronodot-library-update/
     #include <TouchScreen.h> // https://github.com/adafruit/Touch-Screen-Library
     #include <SimpleTimer.h> // http://arduino.cc/playground/Code/SimpleTimer
-       
+
+
+//====================================================================================
+// message from redlegoman
+// this following comment from you interested me too, so I did a little research.
+// go here http://www.arduino.cc/en/Reference/PortManipulation fo an explaination 
+
     // initialize the 16x32 display
     // for reasons that I do not understand, moving any of these pins to 8 or higher fails
+
+
     ht1632c ledMatrix = ht1632c(&PORTD, 7, 6, 0, 1, GEOM_32x16, 2); 
-    
+//====================================================================================    
     // initialize the Chronodot real time clock
     Chronodot RTC; 
     
