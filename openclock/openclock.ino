@@ -10,6 +10,8 @@
     //             + all characters now defined by global variables
     //             + all characters drawn to screen in one place @ end of main loop()
     // 02 dec 2012 . more refactoring . debugging new touch detection
+    // 03 dec 2012 . fix hour bug introduced yesterday 
+    // 03 dec 2012 . touch detection virtual buttons: hr+/- min+/- ampm message
     
 
     #include <Wire.h> // I2C library for Chronodot
@@ -47,9 +49,11 @@
     
     // initialize SimpleTimer, used for menu timeout
     SimpleTimer timer;
-    int menuTimer; // Timer ID
+    int menuTimer; // Timer ID for menu
+    int touchTimer; // Timer ID for touch event
     int menuItem = 0; // 0 if in normal mode, 1+ for menu choices
-    int touchTimeout = 5000; // 5000 milliseconds to timeout
+    int menuTimeout = 5000; // 5 second timeout for menu
+    int touchTimeout = 1000; // 1 second timeout for touch event
 
     // initialize array to hold [x, y, prior_x, prior_y] data for touch location
     int dot[4] = {0,0,0,0}; 
@@ -58,13 +62,17 @@
     // pixel[0,1] = [x,y] pixel ... x=0-31, y=0-15
     int pixel[2];
     
-    // define the state of each touch "button"
-    boolean touchHourPlus = false;
-    boolean touchHourMinus = false;
-    boolean touchMinutePlus = false;
-    boolean touchMinuteMinus = false;
-    boolean touchAMPM = false;
-    boolean touchMessageArea = false;
+    // define "button" numbers
+    
+    #define TOUCH_HOURPLUS    1
+    #define TOUCH_HOURMINUS   2
+    #define TOUCH_MINUTEPLUS  3
+    #define TOUCH_MINUTEMINUS 4
+    #define TOUCH_AMPM        5
+    #define TOUCH_MESSAGE     6
+    #define TOUCH_WTF         7
+    
+    int touchState = 0;
     
     boolean touchActive = false;
     
@@ -116,7 +124,7 @@
       
         timer.run(); // activate SimpleTimer                             
         currentTime(); // read current time and set global variables for hour, minute, am/pm         
-        setStyle(dispHour24, dispMinute); // set color and brightness based on displayed time        
+        setStyle(dispHour24, dispMinute); // set color and brightness based on displayed time   
         detectTouch(); // detect touch state        
         drawScreen(dispHour12, dispMinute, dispPM, touchActive, msg); // draw the screen             
         delay(100); // wait for 100ms
@@ -180,184 +188,109 @@
                                     
     int detectTouch(){
         
-        int changedStates = 0;
+        int lastTouchState = touchState;
         
-        char buf[7];
+        boolean newTouch = false;
+        boolean endTouch = false;
+        boolean activeTouch = false;
+        boolean activeTimer = false;
         
-        // read coordinates, map to location on screen        
-        Point p = ts.getPoint();                   // read coordinates
+        // read X,Y coordinates and pressure
+        Point p = ts.getPoint();  
 
         // define variables for screen regions
         int verticalRegion = 0;
         int horizontalRegion = 0;
         
-        // define variables for new touch states
-        boolean touchHourPlus_now = false;
-        boolean touchHourMinus_now = false;
-        boolean touchMinutePlus_now = false;
-        boolean touchMinuteMinus_now = false;
-        boolean touchAMPM_now = false;
-        boolean touchMessageArea_now = false;
-
         // map coordinates to pixel location
         pixel[0] = map(p.x,75,930,0,31);           // x calibration by trial-and-error
         pixel[1] = map(p.y,300,770,0,15);          // y calibration by trial-and-error
         
+        int px = pixel[0];
+        int py = pixel[1];
+        
         // map pixel location to screen region
-        if (pixel[0] < 9) horizontalRegion = 0;           // x pixel 0-8   = 1st digit of hour
-        else if (pixel[0] < 17) horizontalRegion = 1;     // x pixel 9-17  = 2nd digit of hour
-        else if (pixel[0] < 25) horizontalRegion = 2;     // x pixel 18-25 = 1st digit of minute
-        else if (pixel[0] < 33) horizontalRegion = 3;     // x pixel 26-33 = 2nd digit of minute
+        if      (px >=0  && px <=8 )  horizontalRegion = 1;        // x pixel 0-8   = 1st digit of hour
+        else if (px >=9  && px <=17)  horizontalRegion = 2;        // x pixel 9-17  = 2nd digit of hour
+        else if (px >=18 && px <=25)  horizontalRegion = 3;        // x pixel 18-25 = 1st digit of minute
+        else if (px >=26 && px <=33)  horizontalRegion = 4;        // x pixel 26-33 = 2nd digit of minute
+        else                          horizontalRegion = 0;
         
-        if (pixel[1] < 6) verticalRegion = 0;          // y pixel 0-5   = top of time digits
-        else if (pixel[1] < 11) verticalRegion = 1;     // y pixel 6-10  = bottom of time digits
-        else if (pixel[1] < 16) verticalRegion = 2;     // y pixel 11-16 = message / ampm area
+        if      (py >=0  && py <=5 )  verticalRegion = 1;          // y pixel 0-5   = top of time digits
+        else if (py >=6  && py <=10)  verticalRegion = 2;          // y pixel 6-10  = bottom of time digits
+        else if (py >=11 && py <=16)  verticalRegion = 3;          // y pixel 11-16 = message / ampm area
+        else                          verticalRegion = 0;
         
-        // define new button states based on region touched
+        // define new virtual button states based on region touched
         
-        //if (p.z > ts.pressureThreshhold){
-          if (verticalRegion == 0){
-            if (horizontalRegion == 0) touchHourPlus = true;
-            if (horizontalRegion == 1) touchHourPlus = true;
-            if (horizontalRegion == 2) touchMinutePlus = true;
-            if (horizontalRegion == 3) touchMinutePlus = true;
-          }
-          else if(verticalRegion == 1){
-            if (horizontalRegion == 0) touchHourMinus = true;
-            if (horizontalRegion == 1) touchHourMinus = true;
-            if (horizontalRegion == 2) touchMinuteMinus = true;
-            if (horizontalRegion == 3) touchMinuteMinus = true;
+          if (verticalRegion == 1){
+            if (horizontalRegion == 1) touchState = TOUCH_HOURPLUS;
+            if (horizontalRegion == 2) touchState = TOUCH_HOURPLUS;
+            if (horizontalRegion == 3) touchState = TOUCH_MINUTEPLUS;
+            if (horizontalRegion == 4) touchState = TOUCH_MINUTEPLUS;
           }
           else if(verticalRegion == 2){
-            if (horizontalRegion == 0) touchMessageArea = true;
-            if (horizontalRegion == 1) touchMessageArea = true;
-            if (horizontalRegion == 2) touchMessageArea = true;
-            if (horizontalRegion == 3) touchAMPM = true;
+            if (horizontalRegion == 1) touchState = TOUCH_HOURMINUS;
+            if (horizontalRegion == 2) touchState = TOUCH_HOURMINUS;
+            if (horizontalRegion == 3) touchState = TOUCH_MINUTEMINUS;
+            if (horizontalRegion == 4) touchState = TOUCH_MINUTEMINUS;
           }
-        //}
-        /**else{
-          touchHourPlus_now    = false;
-          touchHourMinus_now   = false;
-          touchMinutePlus_now  = false;
-          touchMinuteMinus_now = false;
-          touchAMPM_now        = false;
-          touchMessageArea_now = false;
-        }**/
-        
-        changedStates = changedStates +
-         (touchHourPlus_now - touchHourPlus)+
-         (touchHourMinus_now - touchHourMinus)+
-         (touchMinutePlus_now - touchMinutePlus)+
-         (touchMinuteMinus_now - touchMinuteMinus)+
-         (touchAMPM_now - touchAMPM)+
-         (touchMessageArea_now - touchMessageArea);
+          else if(verticalRegion == 3){
+            if (horizontalRegion == 1) touchState = TOUCH_MESSAGE;
+            if (horizontalRegion == 2) touchState = TOUCH_MESSAGE;
+            if (horizontalRegion == 3) touchState = TOUCH_MESSAGE;
+            if (horizontalRegion == 4) touchState = TOUCH_AMPM;
+          }
+          else if(verticalRegion == 0 || horizontalRegion == 0){
+            touchState = 0;
+            touchState = TOUCH_WTF;
+          }
+          else{
+            touchState = 0;
+          }
           
-        touchHourPlus = touchHourPlus_now;
-        touchHourMinus = touchHourPlus_now;
-        touchMinutePlus = touchHourPlus_now;
-        touchMinuteMinus = touchHourPlus_now;
-        touchAMPM = touchHourPlus_now;
-        touchMessageArea = touchHourPlus_now;
-        
-        // temp for troubleshooting
-        
-        if (touchHourPlus){
-            msg[1]='h';
-            msg[2]='o';
-            msg[3]='u';
-            msg[4]='r';
-            msg[5]='+';
-            msg[6]='\0';
-        }
-        
-        if (touchHourMinus){
-            msg[1]='h';
-            msg[2]='o';
-            msg[3]='u';
-            msg[4]='r';
-            msg[5]='-';
-            msg[6]='\0';
-        }
-        
-        if (touchMinutePlus){
-            msg[1]='m';
-            msg[2]='i';
-            msg[3]='n';
-            msg[4]='+';
-            msg[5]='\0';
-            msg[6]='\0';
-        }
-        if (touchMinuteMinus){
-            msg[1]='m';
-            msg[2]='i';
-            msg[3]='n';
-            msg[4]='-';
-            msg[5]='\0';
-            msg[6]='\0';
-        }
-        if (touchAMPM){
-            msg[1]='a';
-            msg[2]='m';
-            msg[3]='p';
-            msg[4]='m';
-            msg[5]='\0';
-            msg[6]='\0';
-        }
-        if (touchMessageArea){
-            msg[1]='m';
-            msg[2]='s';
-            msg[3]='g';
-            msg[4]='\0';
-            msg[5]='\0';
-            msg[6]='\0';
-        }
-        
-       if (changedStates == false){
-            msg[1]='\0';
-            msg[2]='\0';
-            msg[3]='\0';
-            msg[4]='\0';
-            msg[5]='\0';
-            msg[6]='\0';
-       }        
-       
-       if (p.z > ts.pressureThreshhold){
-         touchActive = true;
-       }
-       else{
-         touchActive = false;
-       }
-       
-       itoa(pixel[0],buf,10);
-       if (pixel[0] < 10){
-         msg[1] = '\0';
-         msg[2] = buf[0];
-       }
-       else{
-         msg[1] = buf[0];
-         msg[2] = buf[1];
-       }
-         
-       itoa(pixel[1],buf,10);
-       if (pixel[1] < 10){
-         msg[3] = '\0';
-         msg[4] = buf[0];
-       }
-       else{
-         msg[3] = buf[0];
-         msg[4] = buf[1];
-       }
-         
-       itoa(p.z,buf,10);
-       if (p.z < 10){
-         msg[5] = '\0';
-         msg[6] = buf[0];
-       }
-       else{
-         msg[5] = buf[0];
-         msg[6] = buf[1];
-       }
+          // set boolean variables according to state of touch, timer, etc.
+          
+          if (lastTouchState == 0 && touchState > 0)          newTouch = true;
+          if (touchState > 0 && touchState != lastTouchState) newTouch = true;
+          if (touchState == 0 && lastTouchState > 0)          endTouch = true;
+          if (p.z > ts.pressureThreshhold )                activeTouch = true;
+          if (timer.isEnabled(touchTimer) )                activeTimer = true;
+          
+          // decide what to do based on touch state, and get outta here
+          
+          if (activeTouch == false || touchState == TOUCH_WTF){
+            if (touchState == TOUCH_WTF) touchState = 0;
+            return 0;
+          }
+          
+          else if (activeTimer == false){
+            touchTimer = timer.setTimeout(touchTimeout, exitTouch);
+            touchActive = true;
+            tempFunction(touchState); // temporary test of virtual buttons
+            return touchState;
+          }
+          
+          else if (activeTimer == true){
+            touchState = lastTouchState;
+            touchActive = true;
+            tempFunction(touchState); // temporary test of virtual buttons
+            return touchState;
+          }
+          
+          else if (activeTimer == false){
+            exitTouch();
+          }
+                    
+          else{
+            touchActive = false;
+            touchState = TOUCH_WTF;
+            tempFunction(touchState); // temporary test of virtual buttons
+            return touchState;
+          }
 
+
+        /*** this needs to be relocated
         // draw the touch dot, if the menu is active
         // and put the X,Y location of the plotted dot into dot[2], dot[3] so we know what to erase next time
         if (p.z > ts.pressureThreshhold){
@@ -365,90 +298,89 @@
           dot[2] = dot[0];
           dot[3] = dot[1];
         }
-
-                
-/*******
-
-        // is there a touch point in the message region?
-        if (touchMessageArea){ 
-          if (timer.isEnabled(menuTimer)){         // is the timeout timer already running?
-            timer.restartTimer(menuTimer);         // if so, restart it
-            menuItem++;                            // and increment the menu position
-            if (menuItem == 4) menuItem = 0;       // loop back to the top of the menu
-          }
-          else{                                    // the timer isn't running, so...
-            menuItem++;                            // increment the menu position
-            if (menuItem == 4) menuItem = 0;       // or loop back if necessary
-            
-            // start the timeout timer at 5 seconds, and call exitMenu with its done
-            menuTimer = timer.setTimeout(5000, exitMenu);
-          }
-          menu(p);                                 // now go to the menu subroutine
-        }
-        
-        if (timer.isEnabled(menuTimer)){           // no touch, but timer is still running?
-          menu(p);                                 // go to menu subroutine
-        }
-******/
- 
-         return(changedStates); 
- 
+        ***/
+    }
+    
+    // called when touch event timer elapses
+    
+    void exitTouch(){
+      timer.disable(touchTimer);
+      touchActive = false;
     }
     
     
-    void menu(Point p){
-              
-        dot[0] = pixel[0];
-        dot[1] = pixel[1];
+    // temporary function to test touch functions
+    
+    void tempFunction(int ts){
+      
+      switch (ts){
         
-/****
-        
-        switch (menuItem){
+        case TOUCH_HOURPLUS:
+            msg[1]='H';
+            msg[2]='O';
+            msg[3]='U';
+            msg[4]='R';
+            msg[5]='+';
+            msg[6]='\0';
+            break;
+
+        case TOUCH_HOURMINUS:
+            msg[1]='H';
+            msg[2]='O';
+            msg[3]='U';
+            msg[4]='R';
+            msg[5]='-';
+            msg[6]='\0';
+            break;
+
+        case TOUCH_MINUTEPLUS:
+            msg[1]='M';
+            msg[2]='I';
+            msg[3]='N';
+            msg[4]='+';
+            msg[5]='\0';
+            msg[6]='\0';
+            break;
           
-          case 1:
+        case TOUCH_MINUTEMINUS:
+            msg[1]='M';
+            msg[2]='I';
+            msg[3]='N';
+            msg[4]='-';
+            msg[5]='\0';
+            msg[6]='\0';
+            break;
+          
+        case TOUCH_AMPM:
             msg[1]='A';
-            msg[2]='l';
-            msg[3]='a';
-            msg[4]='r';
-            msg[5]='m';
-            msg[6]='\0';
-            
-            // if (region[0] <= 1 && region[1] == 0){
-            //   dispHour++;
-            // }
-            // else if (region[0] <= 1 && region[1] == 1){
-            //   dispHour--;
-            // }
-            // else if (region[0] >= 2 && region[1] == 0){
-            //   dispMin++;
-            // }
-            // else if (region[0] >= 2 && region[1] == 1){
-            //   dispMin--;
-            // }
-            
-            break;
-         
-         case 2:
-            msg[1]='T';
-            msg[2]='i';
-            msg[3]='m';
-            msg[4]='e';
+            msg[2]='M';
+            msg[3]='P';
+            msg[4]='M';
             msg[5]='\0';
             msg[6]='\0';
             break;
-         
-         case 3:
-            msg[1]='E';
-            msg[2]='x';
-            msg[3]='i';
-            msg[4]='t';
+          
+        case TOUCH_MESSAGE:
+            msg[1]='M';
+            msg[2]='S';
+            msg[3]='G';
+            msg[4]='\0';
             msg[5]='\0';
             msg[6]='\0';
             break;
-        }
-            ****/
-                 
+
+        case TOUCH_WTF:
+            msg[1]='W';
+            msg[2]='T';
+            msg[3]='F';
+            msg[4]='?';
+            msg[5]='\0';
+            msg[6]='\0';
+            break;
+
+      }
     }
+     
     
     // draw the screen
     
@@ -460,6 +392,16 @@
         
         dig[0] = '1'; // set flag for valid time
         
+         // clear any prior touch dots
+        ledMatrix.plot(dot[2],dot[3],BLACK); // clear any prior touch dots
+        
+        // clear the message area        
+        ledMatrix.rect(0,11,22,15,BLACK);
+        ledMatrix.rect(1,10,21,14,BLACK);
+        ledMatrix.rect(2,9,20,13,BLACK);
+        ledMatrix.rect(3,8,19,12,BLACK);
+
+
         // set the hours digits
         itoa(hour12, buf, 10);
         if (hour12 < 10){
@@ -489,14 +431,6 @@
         msg[7] = ampm;
         msg[8] = letter_m;                       
       
-        // clear any prior touch dots
-        ledMatrix.plot(dot[2],dot[3],BLACK); // clear any prior touch dots
-        
-        // clear the message area        
-        ledMatrix.rect(0,11,22,15,BLACK);
-        ledMatrix.rect(1,10,21,14,BLACK);
-        ledMatrix.rect(2,9,20,13,BLACK);
-        ledMatrix.rect(3,8,19,12,BLACK);
         
         // fist digit of hour
         if (dig[1] == '1') ledMatrix.putchar(2,-2,'1',digit_color,6);
@@ -528,23 +462,6 @@
         ledMatrix.sendframe();
         
     }
-        
     
-    void exitMenu(){
-        timer.disable(menuTimer);
-        menuItem = 0; // return menu to default        
-        
-        
-        /*
-        // temporary for testing
-        DateTime now = RTC.now();    
-        dispHour = now.hour();
-        dispMin = now.minute();
-        if (dispHour > 12) dispHour = dispHour - 12;
-        */
-        
-    }
-        
-      
-
+    
 
