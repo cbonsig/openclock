@@ -12,6 +12,7 @@
     // 02 dec 2012 . more refactoring . debugging new touch detection
     // 03 dec 2012 . fix hour bug introduced yesterday 
     // 03 dec 2012 . touch detection virtual buttons: hr+/- min+/- ampm message
+    // 04 dec 2012 . fix bug: midnight renders as 0:00
     
 
     #include <Wire.h> // I2C library for Chronodot
@@ -140,6 +141,10 @@
         if (nowHour24 > 12){
           nowHour12 = nowHour24 - 12;
           nowPM = 1;
+        }
+        else if (nowHour24 == 0){
+          nowHour12 = 12;
+          nowPM = 0;
         }
         else{
           nowHour12 = nowHour24;
