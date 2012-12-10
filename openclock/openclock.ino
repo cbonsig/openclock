@@ -13,6 +13,7 @@
     // 03 dec 2012 . fix hour bug introduced yesterday 
     // 03 dec 2012 . touch detection virtual buttons: hr+/- min+/- ampm message
     // 04 dec 2012 . fix bug: midnight renders as 0:00
+    // 09 dec 2012 . addeded disfunctional proto-alarm-set-mode
     
 
     #include <Wire.h> // I2C library for Chronodot
@@ -52,9 +53,9 @@
     SimpleTimer timer;
     int menuTimer; // Timer ID for menu
     int touchTimer; // Timer ID for touch event
-    int menuItem = 0; // 0 if in normal mode, 1+ for menu choices
-    int menuTimeout = 5000; // 5 second timeout for menu
-    int touchTimeout = 1000; // 1 second timeout for touch event
+    //int menuItem = 0; // 0 if in normal mode, 1+ for menu choices
+    int menuTimeout = 10000; // 10 second timeout for menu
+    int touchTimeout = 500; // 0.5 second timeout for touch event
 
     // initialize array to hold [x, y, prior_x, prior_y] data for touch location
     int dot[4] = {0,0,0,0}; 
@@ -65,6 +66,7 @@
     
     // define "button" numbers
     
+    #define TOUCH_NONE        0
     #define TOUCH_HOURPLUS    1
     #define TOUCH_HOURMINUS   2
     #define TOUCH_MINUTEPLUS  3
@@ -73,9 +75,20 @@
     #define TOUCH_MESSAGE     6
     #define TOUCH_WTF         7
     
-    int touchState = 0;
+    int touchState = TOUCH_NONE;
+    boolean touchNew = false;
+    
+    // define menu states
+    
+    #define MENU_NONE = 0;
+    #define MENU_ALARM = 1;
+    #define MENU_TIME = 2;
+    #define MENU_EXIT = 3;
+    
+    int menuState = 0;  // 0 if in normal mode, 1+ for menu choices
     
     boolean touchActive = false;
+    boolean menuActive = false;
     
     // initialize colors    
     int digit_color = GREEN;
@@ -103,6 +116,11 @@
     int dispMinute = 0;
     int dispPM = 0;
     
+    int alarmHour12 = 6;
+    int alarmHour24 = 6;
+    int alarmMinute = 0;
+    int alarmPM = 0;
+    
     void setup () {
       
       pinMode(7, OUTPUT); // initialize ht1632c pin
@@ -125,9 +143,10 @@
       
         timer.run(); // activate SimpleTimer                             
         currentTime(); // read current time and set global variables for hour, minute, am/pm         
+        detectTouch(); // detect touch state
+        menuMode(); // change display state according to current menu mode    
         setStyle(dispHour24, dispMinute); // set color and brightness based on displayed time   
-        detectTouch(); // detect touch state        
-        drawScreen(dispHour12, dispMinute, dispPM, touchActive, msg); // draw the screen             
+        drawScreen(dispHour12, dispMinute, dispPM, menuActive, msg); // draw the screen             
         delay(100); // wait for 100ms
     }
     
@@ -195,7 +214,6 @@
         
         int lastTouchState = touchState;
         
-        boolean newTouch = false;
         boolean endTouch = false;
         boolean activeTouch = false;
         boolean activeTimer = false;
@@ -256,43 +274,57 @@
           
           // set boolean variables according to state of touch, timer, etc.
           
-          if (lastTouchState == 0 && touchState > 0)          newTouch = true;
-          if (touchState > 0 && touchState != lastTouchState) newTouch = true;
-          if (touchState == 0 && lastTouchState > 0)          endTouch = true;
-          if (p.z > ts.pressureThreshhold )                activeTouch = true;
-          if (timer.isEnabled(touchTimer) )                activeTimer = true;
+          // if (lastTouchState == 0 && touchState > 0)               touchNew = true;
+          // else if (touchState > 0 && touchState != lastTouchState) touchNew = true;
+          // else if (touchState == lastTouchState)                   touchNew = false;
+          // else                                                     touchNew = false;
+          // if (touchState == 0 && lastTouchState > 0)               endTouch = true;
+          if (p.z > ts.pressureThreshhold ){
+            touchActive = true;
+          }
+          else{
+            touchActive = false;
+            touchState = 0;
+          }
+          //else                                                     activeTouch = false;
+          //if (timer.isEnabled(touchTimer) )                        activeTimer = true;
+          //else                                                     activeTimer = false;
           
           // decide what to do based on touch state, and get outta here
+          
+          /* this is all screwed up. I think touchState is never getting back to 0.
+          
+          
           
           if (activeTouch == false || touchState == TOUCH_WTF){
             if (touchState == TOUCH_WTF) touchState = 0;
             return 0;
           }
           
-          else if (activeTimer == false){
+          if (activeTimer == false && activeTouch == true){
             touchTimer = timer.setTimeout(touchTimeout, exitTouch);
             touchActive = true;
             tempFunction(touchState); // temporary test of virtual buttons
             return touchState;
           }
           
-          else if (activeTimer == true){
+          else if (activeTimer == true && activeTouch == false){
             touchState = lastTouchState;
             touchActive = true;
             tempFunction(touchState); // temporary test of virtual buttons
             return touchState;
           }
           
-          else if (activeTimer == false){
-            exitTouch();
-          }
                     
           else{
             touchActive = false;
-            touchState = TOUCH_WTF;
+            touchState = 0;
             tempFunction(touchState); // temporary test of virtual buttons
             return touchState;
           }
+          
+                    */
+
 
 
         /*** this needs to be relocated
@@ -311,80 +343,11 @@
     void exitTouch(){
       timer.disable(touchTimer);
       touchActive = false;
+      touchNew = false;
+      touchState = 0;
     }
     
     
-    // temporary function to test touch functions
-    
-    void tempFunction(int ts){
-      
-      switch (ts){
-        
-        case TOUCH_HOURPLUS:
-            msg[1]='H';
-            msg[2]='O';
-            msg[3]='U';
-            msg[4]='R';
-            msg[5]='+';
-            msg[6]='\0';
-            break;
-
-        case TOUCH_HOURMINUS:
-            msg[1]='H';
-            msg[2]='O';
-            msg[3]='U';
-            msg[4]='R';
-            msg[5]='-';
-            msg[6]='\0';
-            break;
-
-        case TOUCH_MINUTEPLUS:
-            msg[1]='M';
-            msg[2]='I';
-            msg[3]='N';
-            msg[4]='+';
-            msg[5]='\0';
-            msg[6]='\0';
-            break;
-          
-        case TOUCH_MINUTEMINUS:
-            msg[1]='M';
-            msg[2]='I';
-            msg[3]='N';
-            msg[4]='-';
-            msg[5]='\0';
-            msg[6]='\0';
-            break;
-          
-        case TOUCH_AMPM:
-            msg[1]='A';
-            msg[2]='M';
-            msg[3]='P';
-            msg[4]='M';
-            msg[5]='\0';
-            msg[6]='\0';
-            break;
-          
-        case TOUCH_MESSAGE:
-            msg[1]='M';
-            msg[2]='S';
-            msg[3]='G';
-            msg[4]='\0';
-            msg[5]='\0';
-            msg[6]='\0';
-            break;
-
-        case TOUCH_WTF:
-            msg[1]='W';
-            msg[2]='T';
-            msg[3]='F';
-            msg[4]='?';
-            msg[5]='\0';
-            msg[6]='\0';
-            break;
-
-      }
-    }
      
     
     // draw the screen
@@ -468,5 +431,96 @@
         
     }
     
+    void menuMode(){
+      
+          // decide what to do based on touch state, and get outta here
+          
+          if (menuActive == false && touchState == TOUCH_NONE){
+            menuActive = false;
+            menuState = 0;
+            return;
+          }
+          
+          menuActive = true;
+          
+          if (touchState > 0){
+            menuTimer = timer.setTimeout(menuTimeout, exitMenu);
+          }
+          
+          
+          msg[1] = 'A';
+          msg[2] = 'L';
+          msg[3] = 'A';
+          msg[4] = 'R';
+          msg[5] = 'M';
+          msg[6] = '\0';
+            
+          if (touchState > 0){
+            
+            menuTimer = timer.setTimeout(menuTimeout, exitMenu);
+            
+            switch (touchState){
+              
+              case TOUCH_HOURPLUS:
+                if (alarmHour12 < 12) alarmHour12++;
+                else if (alarmHour12 == 12){
+                  alarmHour12 = 1;
+                  if (alarmPM == 0) alarmPM = 1;
+                  else if (alarmPM != 0) alarmPM = 0;
+                }
+                break;
+
+              case TOUCH_HOURMINUS:
+                if (alarmHour12 > 1) alarmHour12--;
+                else if (alarmHour12 == 1){
+                  alarmHour12 = 12;
+                  if (alarmPM == 0) alarmPM = 1;
+                  else if (alarmPM != 0) alarmPM = 0;
+                }
+                break;
+
+              case TOUCH_MINUTEPLUS:
+                if (alarmMinute < 59) alarmMinute++;
+                else if (alarmMinute == 59){
+                  alarmMinute = 0;
+                }
+                break;
+
+              case TOUCH_MINUTEMINUS:
+                if (alarmMinute > 0) alarmMinute--;
+                else if (alarmMinute == 0){
+                  alarmMinute = 59;
+                }
+                break;
+
+              case TOUCH_AMPM:
+                if (alarmPM == 0) alarmPM = 1;
+                else if (alarmPM != 0) alarmPM = 0;
+                break;
+                
+              case 0:
+                break;  
+                }
+          }
+
+              
+          dispHour12 = alarmHour12;
+          dispMinute = alarmMinute;
+          dispPM = alarmPM;           
+                
+          return;
+     }
     
+    void exitMenu(){
+      timer.disable(menuTimer);
+      menuActive = false;
+      menuState = 0;
+      touchState = 0;
+      msg[1] = '\0';
+      msg[2] = '\0';
+      msg[3] = '\0';
+      msg[4] = '\0';
+      msg[5] = '\0';
+      msg[6] = '\0';
+    }
 
