@@ -18,7 +18,9 @@
 //               to-do: improve touch/button management, time variables,
 //               alarm variables, and menu logic. try to use similar logic
 //               and code as alphaclockfive
-
+// 04 feb 2013 . reworked logic in detectTouch and menuMode to improve alarm setting
+//               now more functional, but not quite right. menu timer doesn't reset.
+//               improved comments in a few places
 
 #include <Wire.h> // I2C library for Chronodot
 #include <ht1632c.h> // http://code.google.com/p/ht1632c/
@@ -32,7 +34,7 @@
 //====================================================================================
 // message from redlegoman
 // this following comment from you interested me too, so I did a little research.
-// go here http://www.arduino.cc/en/Reference/PortManipulation fo an explaination 
+// go here http://www.arduino.cc/en/Reference/PortManipulation for an explanation  
 
 // initialize the 16x32 display
 // for reasons that I do not understand, moving any of these pins to 8 or higher fails
@@ -60,8 +62,8 @@ SimpleTimer timer;
 int menuTimer; // Timer ID for menu
 int touchTimer; // Timer ID for touch event
 //int menuItem = 0; // 0 if in normal mode, 1+ for menu choices
-int menuTimeout = 10000; // 10 second timeout for menu
-int touchTimeout = 500; // 0.5 second timeout for touch event
+int menuTimeout = 5000; // 5 second timeout for menu
+int touchTimeout = 100; // 0.1 second timeout for touch event
 
 // initialize array to hold [x, y, prior_x, prior_y] data for touch location
 int dot[4] = {
@@ -93,9 +95,10 @@ boolean touchNew = false;
 #define MENU_EXIT = 3;
 
 int menuState = 0;  // 0 if in normal mode, 1+ for menu choices
+boolean menuNew = false; 
 
-boolean touchActive = false;
-boolean menuActive = false;
+boolean touchActive = false; // true if screen has been touched in last touchTimeout (0.5) seconds, else false
+boolean menuActive = false; // true if menu mode is active, else false
 
 // initialize colors    
 int digit_color = GREEN;
@@ -128,6 +131,10 @@ int alarmHour24 = 6;
 int alarmMinute = 0;
 int alarmPM = 0;
 
+//////////////////////////////////////////////////////////////////////////////////
+// setup()
+// set the pins, initialize the display, etc.
+
 void setup () {
 
   pinMode(7, OUTPUT); // initialize ht1632c pin
@@ -146,6 +153,10 @@ void setup () {
 
 }
 
+//////////////////////////////////////////////////////////////////////////////////
+// loop()
+// main program loop
+
 void loop () {
 
   timer.run(); // activate SimpleTimer                             
@@ -156,6 +167,13 @@ void loop () {
   drawScreen(dispHour12, dispMinute, dispPM, menuActive, msg); // draw the screen             
   delay(100); // wait for 100ms
 }
+
+//////////////////////////////////////////////////////////////////////////////////
+// currentTime()
+// read the current time from the RTC
+// set global variables: nowHour24, nowHour12, nowPM, nowMinute
+// set dispHour24, dispHour12, dispMinute, dispPM to current time
+// (if in menu mode, disp* variables will be overwritten before going to screen)
 
 void currentTime () {
 
@@ -187,6 +205,10 @@ void currentTime () {
   dispPM = nowPM;
 }
 
+//////////////////////////////////////////////////////////////////////////////////
+// setStyle()
+// set color, brightness and boldness based on hour and minute passed to function
+
 void setStyle(int hour24, int minute) {
 
   // adjust the brightness based on the time of day
@@ -215,18 +237,60 @@ void setStyle(int hour24, int minute) {
 
 }
 
+//////////////////////////////////////////////////////////////////////////////////
+// detectTouch()
+// determine if touchscreen pressure exceeds threshold
+// if no, and touch timer has not elapsed, keep touch state the same
+// if no, and touch timer has elapsed, set touch state to "none"
+// if yes, and touch timer has not elapsed, keep touch state the same
+// if yes, and touch timer is not active, this is a new touch event, so...
+//    set the touch state ("activate button") based on screen region touched
 
 
 int detectTouch(){
 
-  int lastTouchState = touchState;
-
-  boolean endTouch = false;
-  boolean activeTouch = false;
-  boolean activeTimer = false;
+  //touchNew = false;            // this isn't a new touch unless we change this flag below 
+  int lastTouchState = touchState; // save the previous touch state here
+  
+  if (timer.isEnabled(touchTimer)){ // touch timer is active, so don't change anything
+    touchState = lastTouchState;    // just set touch value to previous value
+    return touchState;              // and get outta here
+  }
+  else{                          // otherwise, the timer is disabled
+    if (touchActive == true){    // if the active flag is "true", we just timed out, so 
+      touchActive = false;       // set the touchActive flag to false
+      touchState = TOUCH_NONE;   // set the touch state to none
+      return touchState;         // and get outta here
+    }
+    if (touchActive == false){ // timer isn't active, so there's probably nothing happening here
+      touchState = TOUCH_NONE; // so set the touch state to none
+    }                          // but don't return yet, because we have to check the if the
+  }                            // touchscreen is being touched
+    
+  // commented next 3 lines feb4
+  //boolean endTouch = false;
+  //boolean activeTouch = false;
+  //boolean activeTimer = false;
 
   // read X,Y coordinates and pressure
-  Point p = ts.getPoint();  
+  Point p = ts.getPoint();
+  
+  if (p.z < ts.pressureThreshhold ){  // touchscreen isn't being touched
+    touchState = lastTouchState;      // so don't change the touch state
+    return touchState;                // and return 
+  }
+  
+  // if we have made it this far...
+  // the touch timer is not active, and the screen is being touched
+  // so this is a new touch, and we have to figure out what "button" was pushed
+  
+  touchTimer = timer.setTimeout(touchTimeout, exitTouch);   // start up the touch timer
+  touchActive = true;                                       // touch event is active
+  touchNew = true;                                          // this is a new touch
+  
+  //timer.restartTimer(menuTimer);      // this is probably not the right place
+                                                            // but this should reset the menu timer
+                                                            // any time the screen is touched
 
   // define variables for screen regions
   int verticalRegion = 0;
@@ -278,86 +342,14 @@ int detectTouch(){
   else{
     touchState = 0;
   }
+  
+  return touchState;
 
-  // set boolean variables according to state of touch, timer, etc.
-
-  // if (lastTouchState == 0 && touchState > 0)               touchNew = true;
-  // else if (touchState > 0 && touchState != lastTouchState) touchNew = true;
-  // else if (touchState == lastTouchState)                   touchNew = false;
-  // else                                                     touchNew = false;
-  // if (touchState == 0 && lastTouchState > 0)               endTouch = true;
-  if (p.z > ts.pressureThreshhold ){
-    touchActive = true;
-  }
-  else{
-    touchActive = false;
-    touchState = 0;
-  }
-  //else                                                     activeTouch = false;
-  //if (timer.isEnabled(touchTimer) )                        activeTimer = true;
-  //else                                                     activeTimer = false;
-
-  // decide what to do based on touch state, and get outta here
-
-  /* this is all screwed up. I think touchState is never getting back to 0.
-   
-   
-   
-   if (activeTouch == false || touchState == TOUCH_WTF){
-   if (touchState == TOUCH_WTF) touchState = 0;
-   return 0;
-   }
-   
-   if (activeTimer == false && activeTouch == true){
-   touchTimer = timer.setTimeout(touchTimeout, exitTouch);
-   touchActive = true;
-   tempFunction(touchState); // temporary test of virtual buttons
-   return touchState;
-   }
-   
-   else if (activeTimer == true && activeTouch == false){
-   touchState = lastTouchState;
-   touchActive = true;
-   tempFunction(touchState); // temporary test of virtual buttons
-   return touchState;
-   }
-   
-   
-   else{
-   touchActive = false;
-   touchState = 0;
-   tempFunction(touchState); // temporary test of virtual buttons
-   return touchState;
-   }
-   
-   */
-
-
-
-  /*** this needs to be relocated
-   * // draw the touch dot, if the menu is active
-   * // and put the X,Y location of the plotted dot into dot[2], dot[3] so we know what to erase next time
-   * if (p.z > ts.pressureThreshhold){
-   * ledMatrix.plot(dot[0],dot[1],message_color);
-   * dot[2] = dot[0];
-   * dot[3] = dot[1];
-   * }
-   ***/
 }
 
-// called when touch event timer elapses
-
-void exitTouch(){
-  timer.disable(touchTimer);
-  touchActive = false;
-  touchNew = false;
-  touchState = 0;
-}
-
-
-
-
-// draw the screen
+//////////////////////////////////////////////////////////////////////////////////
+// drawScreen()
+// draw the screen, using the digits and characters passed to the function
 
 void drawScreen( int hour12, int minute, int pm, boolean msgState, char message[10]){    
 
@@ -438,21 +430,29 @@ void drawScreen( int hour12, int minute, int pm, boolean msgState, char message[
 
 }
 
+//////////////////////////////////////////////////////////////////////////////////
+// menuMode()
+// wonky menu logic is presently here
+
 void menuMode(){
 
   // decide what to do based on touch state, and get outta here
-
-    if (menuActive == false && touchState == TOUCH_NONE){
-    menuActive = false;
-    menuState = 0;
+  
+  if (menuNew == false && touchNew == true){
+    menuActive = true;
+    menuTimer = timer.setTimeout(menuTimeout, exitMenu);
+  }
+  
+  if (touchNew == true){
+    timer.restartTimer(menuTimer);
+  }
+    
+  if (menuActive == false){
+    menuActive = false; //unnecessary
+    menuState = TOUCH_NONE; //unnecessary
     return;
   }
 
-  menuActive = true;
-
-  if (touchState > 0){
-    menuTimer = timer.setTimeout(menuTimeout, exitMenu);
-  }
 
 
   msg[1] = 'A';
@@ -462,9 +462,9 @@ void menuMode(){
   msg[5] = 'M';
   msg[6] = '\0';
 
-  if (touchState > 0){
+  if (touchState > 0 && touchNew == true){
 
-    menuTimer = timer.setTimeout(menuTimeout, exitMenu);
+    //menuTimer = timer.setTimeout(menuTimeout, exitMenu);
 
     switch (touchState){
 
@@ -508,6 +508,10 @@ void menuMode(){
     case 0:
       break;  
     }
+  
+  touchNew = false; // now that an action has been taken, clear the new touch flag
+  timer.restartTimer(menuTimer); // and restart the menu timer
+    
   }
 
 
@@ -517,6 +521,21 @@ void menuMode(){
 
   return;
 }
+
+//////////////////////////////////////////////////////////////////////////////////
+// exitTouch()
+// called when touch timer elapses
+
+void exitTouch(){
+  timer.disable(touchTimer);
+  touchActive = false;        // i don't think these are necessary here
+  touchNew = false;
+  touchState = TOUCH_NONE;
+}
+
+//////////////////////////////////////////////////////////////////////////////////
+// exitMenu()
+// called when menu timer elapses
 
 void exitMenu(){
   timer.disable(menuTimer);
@@ -530,5 +549,74 @@ void exitMenu(){
   msg[5] = '\0';
   msg[6] = '\0';
 }
+
+
+////////
+// junk code here, in case i want to use it for something later
+
+  // set boolean variables according to state of touch, timer, etc.
+
+  // if (lastTouchState == 0 && touchState > 0)               touchNew = true;
+  // else if (touchState > 0 && touchState != lastTouchState) touchNew = true;
+  // else if (touchState == lastTouchState)                   touchNew = false;
+  // else                                                     touchNew = false;
+  // if (touchState == 0 && lastTouchState > 0)               endTouch = true;
+  // if (p.z > ts.pressureThreshhold ){
+  //  touchActive = true;
+  //}
+  //else{
+  //  touchActive = false;
+  //  touchState = 0;
+  //}
+  //else                                                     activeTouch = false;
+  //if (timer.isEnabled(touchTimer) )                        activeTimer = true;
+  //else                                                     activeTimer = false;
+
+  // decide what to do based on touch state, and get outta here
+
+  /* this is all screwed up. I think touchState is never getting back to 0.
+   
+   
+   
+   if (activeTouch == false || touchState == TOUCH_WTF){
+   if (touchState == TOUCH_WTF) touchState = 0;
+   return 0;
+   }
+   
+   if (activeTimer == false && activeTouch == true){
+   touchTimer = timer.setTimeout(touchTimeout, exitTouch);
+   touchActive = true;
+   tempFunction(touchState); // temporary test of virtual buttons
+   return touchState;
+   }
+   
+   else if (activeTimer == true && activeTouch == false){
+   touchState = lastTouchState;
+   touchActive = true;
+   tempFunction(touchState); // temporary test of virtual buttons
+   return touchState;
+   }
+   
+   
+   else{
+   touchActive = false;
+   touchState = 0;
+   tempFunction(touchState); // temporary test of virtual buttons
+   return touchState;
+   }
+   
+   */
+
+
+
+  /*** this needs to be relocated
+   * // draw the touch dot, if the menu is active
+   * // and put the X,Y location of the plotted dot into dot[2], dot[3] so we know what to erase next time
+   * if (p.z > ts.pressureThreshhold){
+   * ledMatrix.plot(dot[0],dot[1],message_color);
+   * dot[2] = dot[0];
+   * dot[3] = dot[1];
+   * }
+   ***/
 
 
