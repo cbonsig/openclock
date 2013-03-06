@@ -24,12 +24,16 @@
 // 02 mar 2013 . major rewrite for menu/tap timers
 // 03 mar 2013 . debug . reworked menu . tbd -- rewrite rendering for menu states
 // 04 mar 2013 . rough code for menu scheme complete -- tbd: RTC commits, fix time set
+// 05 mar 2013 . debug . display logic refinement
+//               tbd: RTC commits for alarm, time, date
+//               maybe add on/off switch in alarm_init state - add new render for between < and >
+//               and add a . between hour and minute of alarm display
+//               perhaps 12h / 24h mode
 
 
 #include <Wire.h> // I2C library for Chronodot
 #include <ht1632c.h> // http://code.google.com/p/ht1632c/
 #include <TouchScreen.h> // https://github.com/adafruit/Touch-Screen-Library
-//#include <SimpleTimer.h> // http://arduino.cc/playground/Code/SimpleTimer
 
 #include <Time.h>       // The Arduino Time library, http://www.arduino.cc/playground/Code/Time
 #include <DS1307RTC.h>  // For optional RTC module. (This library included with the Arduino Time library)
@@ -98,8 +102,6 @@ boolean alarmState = false;
 #define STATE_DISP_DATE  10
 #define STATE_ALARM_INIT  20
 #define STATE_ALARM_SET  201
-#define STATE_ALARM_OFF  30
-#define STATE_ALARM_ON  40
 #define STATE_TIME_INIT  50
 #define STATE_TIME_SET  501
 #define STATE_DATE_INIT  60
@@ -109,10 +111,10 @@ boolean alarmState = false;
 #define STATE_EXIT  99
 
 int displayState = STATE_DISP_TIME;  // 0 if in normal mode, 1+ for menu choices
-boolean menuNew = false; 
+int menuTaps = true;  // number of taps since menu was last activated
 
 boolean tapActive = false; // true if screen has been taped in last tapTimeout (0.5) seconds, else false
-boolean menuActive = false; // true if menu mode is active, else false
+boolean menuActive = false; // true while menu is active
 
 // initialize colors    
 int digit_color = GREEN;
@@ -204,12 +206,6 @@ void loop () {
   }
   else if (displayState == STATE_ALARM_SET){
     renderTime(alarmHour12, alarmMinute, alarmPM);
-  }
-  else if (displayState == STATE_ALARM_OFF){
-    renderOther();
-  }
-  else if (displayState == STATE_ALARM_ON){
-    renderOther();
   }
   else if (displayState == STATE_TIME_INIT){
     renderOther();
@@ -370,6 +366,19 @@ int detectTap(){
   menuStartMillis = millis();
   tapActive = true;                                       // tap event is active
   tapNew = true;                                          // this is a new tap
+  menuTaps++;
+  
+  // just in case we're going to set the time, set variables according to time
+  // that we entered the menu
+  if ( menuTaps == 1 ){
+    newHour12 = nowHour12;
+    newHour24 = nowHour24;
+    newMinute = nowMinute;
+    newPM = nowPM;
+    newYear = year();
+    newMonth = month();
+    newDay = day();
+  }
 
   return tapZone;
 }
@@ -380,7 +389,7 @@ int detectTap(){
 // depending on current display state, and location of tap
 
 void doActions(){
-
+  
   // if this isn't a new tap, get outta here.
   if ( tapNew == false){
     return;
@@ -388,12 +397,40 @@ void doActions(){
 
   int newDisplayState = displayState;
 
+  int backState = 0;
+  int nextState = 0;
+  
+  if (displayState == STATE_DISP_TIME){
+    backState = STATE_DISP_TIME;
+    nextState = STATE_ALARM_INIT;
+  }
+  else if (displayState == STATE_DISP_DATE){
+    backState = STATE_DISP_TIME;
+    nextState = STATE_ALARM_INIT;
+  }
+  else if (displayState == STATE_ALARM_INIT){
+    backState = STATE_EXIT;
+    nextState = STATE_TIME_INIT;
+  }
+  else if (displayState == STATE_TIME_INIT){
+    backState = STATE_ALARM_INIT;
+    nextState = STATE_DATE_INIT;
+  }
+  else if (displayState == STATE_DATE_INIT){
+    backState = STATE_TIME_INIT;
+    nextState = STATE_EXIT;
+  }
+  else if (displayState == STATE_EXIT){
+    backState = STATE_DATE_INIT;
+    nextState = STATE_ALARM_INIT;
+  }
+  
   switch(displayState){
 
     // tapping in the message area will toggle the alarm on/off
     // tapping anywhere else changes to date display
 
-  case STATE_DISP_TIME: // state 0
+  case STATE_DISP_TIME: // toggle alarm, or advance to date display
 
     if( tapZone == TAP_MESSAGE ){
       if(alarmState == true){
@@ -411,8 +448,8 @@ void doActions(){
     }
     break;
 
-  case STATE_DISP_DATE: // state 10
-    newDisplayState = STATE_ALARM_INIT;
+  case STATE_DISP_DATE: // advance to alarm init
+    newDisplayState = nextState;
     break;
 
 
@@ -420,13 +457,12 @@ void doActions(){
 
     // go backward in menu
     if ( tapZone == TAP_HOURPLUS || tapZone == TAP_HOURMINUS){
-      newDisplayState = STATE_DISP_DATE;
+      newDisplayState = backState;
     }
 
     // go forward in menu
     else if (tapZone == TAP_MINUTEPLUS || tapZone == TAP_MINUTEMINUS){
-      if (alarmState = false) newDisplayState = STATE_ALARM_OFF;
-      if (alarmState = true) newDisplayState = STATE_ALARM_ON;
+      newDisplayState = nextState;
     }
 
     // move to alarm set mode
@@ -485,6 +521,7 @@ void doActions(){
       // code to commit alarm to RTC should go here!!
       alarmState = true;
       menuActive = false;
+      menuTaps = 0;
       newDisplayState = STATE_DISP_TIME;
       break;
 
@@ -494,57 +531,16 @@ void doActions(){
     }// switch(tapZone) for STATE_ALARM_SET
     break;
 
-  case STATE_ALARM_OFF: // state 30
-
-    // go backward in menu
-    if (tapZone == TAP_HOURPLUS || tapZone == TAP_HOURMINUS){
-      newDisplayState = STATE_ALARM_INIT;
-    }
-
-    // go forward in menu
-    else if (tapZone == TAP_MINUTEPLUS || tapZone == TAP_MINUTEMINUS){
-      newDisplayState = STATE_TIME_INIT;
-    }
-
-    // toggle alarm to on
-    else{
-      alarmState = true;
-      newDisplayState = STATE_ALARM_ON;
-    }
-
-    break;
-
-  case STATE_ALARM_ON: // state 40
-
-    // go backward in menu
-    if (tapZone == TAP_HOURPLUS || tapZone == TAP_HOURMINUS){
-      newDisplayState = STATE_ALARM_INIT;
-    }
-
-    // go forward in menu
-    else if (tapZone == TAP_MINUTEPLUS || tapZone == TAP_MINUTEMINUS){
-      newDisplayState = STATE_TIME_INIT;
-    }
-
-    // toggle alarm to off
-    else{
-      alarmState = false;
-      newDisplayState = STATE_ALARM_OFF;
-    }
-
-    break;
-
   case STATE_TIME_INIT:
   
     // go backward in menu
     if (tapZone == TAP_HOURPLUS || tapZone == TAP_HOURMINUS){
-      if (alarmState = false) newDisplayState = STATE_ALARM_OFF;
-      if (alarmState = true) newDisplayState = STATE_ALARM_ON;
+      newDisplayState = backState;
     }
 
     // go forward in menu
     else if ( tapZone == TAP_MINUTEPLUS || tapZone == TAP_MINUTEMINUS){
-      newDisplayState = STATE_DATE_INIT;
+      newDisplayState = nextState;
     }
 
     // move to alarm set mode
@@ -586,7 +582,7 @@ void doActions(){
       break;
 
     case TAP_MINUTEMINUS:
-      if (newMinute > 0) alarmMinute--;
+      if (newMinute > 0) newMinute--;
       else if (newMinute == 0){
         newMinute = 59;
       }
@@ -594,14 +590,15 @@ void doActions(){
       break;
 
     case TAP_AMPM:
-      if (newPM == 0) alarmPM = 1;
-      else if (newPM != 0) alarmPM = 0;
+      if (newPM == 0) newPM = 1;
+      else if (newPM != 0) newPM = 0;
       newDisplayState = STATE_TIME_SET;
       break;
 
     case TAP_MESSAGE:
       // code to commit NEW TIME to RTC should go here!!
       menuActive = false;
+      menuTaps = 0;
       newDisplayState = STATE_DISP_TIME;
       break;
 
@@ -614,12 +611,12 @@ void doActions(){
   case STATE_DATE_INIT:
     // go backward in menu
     if (tapZone == TAP_HOURPLUS || tapZone == TAP_HOURMINUS){
-      newDisplayState = STATE_TIME_INIT;
+      newDisplayState = backState;
     }
 
     // go forward in menu
     else if ( tapZone == TAP_MINUTEPLUS || tapZone == TAP_MINUTEMINUS){
-      newDisplayState = STATE_EXIT;
+      newDisplayState = nextState;
     }
 
     // move to alarm set mode
@@ -710,7 +707,9 @@ void doActions(){
     // message area: commit to RTC and return to normal
     else{
       // include code to commit new date to RTC when "done" is tapped (+menuActive=false)
-      newDisplayState = STATE_DATE_DAY;
+      newDisplayState = STATE_DISP_TIME;
+      menuActive = false;
+      menuTaps = 0;
     }
     
     break;
@@ -719,18 +718,19 @@ void doActions(){
 
     // go backward in menu
     if (tapZone == TAP_HOURPLUS || tapZone == TAP_HOURMINUS){
-      newDisplayState = STATE_DATE_INIT;
+      newDisplayState = backState;
     }
 
     // go forward in menu (wrap around to beginning)
     else if (tapZone == TAP_MINUTEPLUS || tapZone == TAP_MINUTEMINUS){
-      newDisplayState = STATE_ALARM_INIT;
+      newDisplayState = nextState;
     }
 
     // if < or > not tapped, exit from menu
     else{
       newDisplayState = STATE_DISP_TIME;
       menuActive = false;
+      menuTaps = 0;
     }
     break;
 
@@ -758,6 +758,7 @@ void setDisplay(){
     if ((millis() - menuStartMillis) > menuTimeout){
       menuActive = false;
       displayState = STATE_DISP_TIME;
+      menuTaps = 0;
       // exit menu triggers here, if necessary
     }
   }
@@ -985,40 +986,6 @@ void setDisplay(){
     if(alarmPM==false) msg[7] = 'A';
     else msg[7] = 'P';
     msg[8] = 'M';
-    break;
-
-  case STATE_ALARM_OFF:
-    // use renderOther
-    dig[1] = '<';
-    dig[2] = ' ';
-    dig[3] = ' ';
-    dig[4] = '>';
-
-    msg[1] = 'A';
-    msg[2] = 'L';
-    msg[3] = 'A';
-    msg[4] = 'R';
-    msg[5] = 'M';
-    msg[6] = 'O';
-    msg[7] = 'F';
-    msg[8] = 'F';
-    break;
-
-  case STATE_ALARM_ON:
-    // use renderOther
-    dig[1] = '<';
-    dig[2] = ' ';
-    dig[3] = ' ';
-    dig[4] = '>';
-
-    msg[1] = 'A';
-    msg[2] = 'L';
-    msg[3] = 'A';
-    msg[4] = 'R';
-    msg[5] = 'M';
-    msg[6] = ' ';
-    msg[7] = 'O';
-    msg[8] = 'N';
     break;
 
 case STATE_TIME_INIT:
