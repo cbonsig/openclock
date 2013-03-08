@@ -487,21 +487,27 @@ void doActions(){
     switch(tapZone){
 
     case TAP_HOURPLUS:
-      if (alarmHour12 < 12) alarmHour12++;
+      if (alarmHour12 < 11) alarmHour12++;
+      else if (alarmHour12 == 11){
+        alarmHour12++;
+        if (alarmPM == 0) alarmPM = 1;
+        else if (alarmPM == 1) alarmPM = 0;
+      }
       else if (alarmHour12 == 12){
         alarmHour12 = 1;
-        if (alarmPM == 0) alarmPM = 1;
-        else if (alarmPM != 0) alarmPM = 0;
       }
       newDisplayState = STATE_ALARM_SET;
       break;
 
     case TAP_HOURMINUS:
-      if (alarmHour12 > 1) alarmHour12--;
-      else if (alarmHour12 == 1){
-        alarmHour12 = 12;
+      if (alarmHour12 == 12){
+        alarmHour12--;
         if (alarmPM == 0) alarmPM = 1;
         else if (alarmPM != 0) alarmPM = 0;
+      }
+      else if (alarmHour12 > 1) alarmHour12--;
+      else if (alarmHour12 == 1){
+        alarmHour12 = 12;
       }
       newDisplayState = STATE_ALARM_SET;
       break;
@@ -575,21 +581,27 @@ void doActions(){
     switch(tapZone){
 
     case TAP_HOURPLUS:
-      if (newHour12 < 12) newHour12++;
+      if (newHour12 < 11) newHour12++;
+      else if (newHour12 == 11){
+        newHour12++;
+        if (newPM == 0) newPM = 1;
+        else if (newPM == 1) newPM = 0;
+      }
       else if (newHour12 == 12){
         newHour12 = 1;
-        if (newPM == 0) newPM = 1;
-        else if (newPM != 0) newPM = 0;
       }
       newDisplayState = STATE_TIME_SET;
       break;
 
     case TAP_HOURMINUS:
-      if (newHour12 > 1) newHour12--;
-      else if (newHour12 == 1){
-        newHour12 = 12;
+      if (newHour12 == 12){
+        newHour12--;
         if (newPM == 0) newPM = 1;
         else if (newPM != 0) newPM = 0;
+      }
+      else if (newHour12 > 1) newHour12--;
+      else if (newHour12 == 1){
+        newHour12 = 12;
       }
       newDisplayState = STATE_TIME_SET;
       break;
@@ -826,8 +838,8 @@ void setDisplay(){
       }
 
       // change zeros to O's for better readability
-      if (msg[1] == '0') msg[3] = 'O';
-      if (msg[2] == '0') msg[4] = 'O';
+      if (msg[1] == '0') msg[1] = 'O';
+      if (msg[2] == '0') msg[2] = 'O';
       if (msg[3] == '0') msg[3] = 'O';
       if (msg[4] == '0') msg[4] = 'O';
 
