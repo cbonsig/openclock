@@ -25,10 +25,12 @@
 // 03 mar 2013 . debug . reworked menu . tbd -- rewrite rendering for menu states
 // 04 mar 2013 . rough code for menu scheme complete -- tbd: RTC commits, fix time set
 // 05 mar 2013 . debug . display logic refinement
-//               tbd: RTC commits for alarm, time, date
-//               maybe add on/off switch in alarm_init state - add new render for between < and >
-//               and add a . between hour and minute of alarm display
-//               perhaps 12h / 24h mode
+// 07 mar 2013 . various fixes . added on/off for alarm . fixed colors . added RTC commit for time
+//               added : between hour and minute for alarm display
+//               tbd: fix date set display
+//                    commit alarm to RTC?
+//                    add wave board for and alarm trigger code
+//                    perhaps 12h / 24 h mode
 
 
 #include <Wire.h> // I2C library for Chronodot
@@ -79,6 +81,9 @@ int dot[4] = {
 // initialize array to hold mapped coordinates for tap location
 // pixel[0,1] = [x,y] pixel ... x=0-31, y=0-15
 int pixel[2];
+
+// define hour at which clock digits change from red to green in morning
+#define GREEN_HOUR      7
 
 // define tapZone "button" numbers
 
@@ -629,7 +634,20 @@ void doActions(){
       break;
 
     case TAP_MESSAGE:
-      // code to commit NEW TIME to RTC should go here!!
+
+      if (newPM == false){
+        if (newHour12 == 12) newHour24 = 0; // 12:00am = 00.00
+        else newHour24 = newHour12;         // 1:00am-11:59am = 01.00-11.59 
+      }
+      else{
+        if (newHour12 == 12) newHour24 = 12; // 12:00pm = 12.00
+        else newHour24 = newHour12 + 12;         // 1:00pm-11:59pm = 13.00-23.59
+      }
+
+      // commit to RTC
+      setTime(newHour24, newMinute, 0, day(now()), month(now()), year(now()));      
+      RTC.set(now());
+
       menuActive = false;
       menuTaps = 0;
       newDisplayState = STATE_DISP_TIME;
@@ -747,7 +765,12 @@ void doActions(){
 
     // message area: commit to RTC and return to normal
     else{
-      // include code to commit new date to RTC when "done" is tapped (+menuActive=false)
+      
+      //commit to RTC
+      setTime(hour(now()), minute(now()), second(now()), newDay, newMonth, newYear);      
+      RTC.set(now());
+
+      
       newDisplayState = STATE_DISP_TIME;
       menuActive = false;
       menuTaps = 0;
@@ -1174,14 +1197,14 @@ void setStyle(int hour24, int minute) {
   else if (hour24 <= 24) ledMatrix.pwm(1); // 10:00p to 11:59p minimum brightness
 
   // adjust the color based on the time
-  if (hour24 <= 6) digit_color = RED; // 12:00a to 6:59a red digits
-  else if (hour24 <= 19) digit_color = GREEN; // 7:00a to 7:59p green digits 
+  if (hour24 <= (GREEN_HOUR-1)) digit_color = RED; // 12:00a to 6:59a red digits
+  else if (hour24 <= (GREEN_HOUR+12-1) ) digit_color = GREEN; // 7:00a to 6:59p green digits 
   else if (hour24 <= 24) digit_color = RED; // 8:00p to 11:59p red digits
 
   // set am/pm color .. this should probably = digit_color if there is an alarm display active in message area
   //ampm_color = digit_color;
   ampm_color = ORANGE;
-  
+
   if (digit_color == GREEN) message_color = RED;
   if (digit_color == RED) message_color = GREEN;
 
@@ -1250,7 +1273,7 @@ void renderTime(int hour12, int minute, int pm){
   msg[8] = letter_m;  
 
   int hour24 = 0;
-  
+
   if (pm == false){
     if (hour12 == 12) hour24 = 0; // 12:00am = 00.00
     else hour24 = hour12;         // 1:00am-11:59am = 01.00-11.59 
@@ -1261,10 +1284,10 @@ void renderTime(int hour12, int minute, int pm){
   }
 
   // adjust the color based on the time
-  if (hour24 <= 6) digit_color = RED; // 12:00a to 6:59a red digits
-  else if (hour24 <= 19) digit_color = GREEN; // 7:00a to 7:59p green digits 
+  if (hour24 <= (GREEN_HOUR-1)) digit_color = RED; // 12:00a to 6:59a red digits
+  else if (hour24 <= (GREEN_HOUR+12-1) ) digit_color = GREEN; // 7:00a to 6:59p green digits 
   else if (hour24 <= 24) digit_color = RED; // 8:00p to 11:59p red digits
-  
+
   if (digit_color == GREEN) message_color = RED;
   if (digit_color == RED) message_color = GREEN;
 
@@ -1388,5 +1411,6 @@ void renderOther( int renderOption ){
  * dot[3] = dot[1];
  * }
  ***/
+
 
 
