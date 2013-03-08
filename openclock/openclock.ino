@@ -110,6 +110,12 @@ boolean alarmState = false;
 #define STATE_DATE_DAY  603
 #define STATE_EXIT  99
 
+// define render options
+
+#define RENDER_NONE 0
+#define RENDER_OFF 1
+#define RENDER_ON 2
+
 int displayState = STATE_DISP_TIME;  // 0 if in normal mode, 1+ for menu choices
 int menuTaps = true;  // number of taps since menu was last activated
 
@@ -147,8 +153,7 @@ int alarmHour24 = 6;
 int alarmMinute = 0;
 int alarmPM = 0;
 
-// TBD: these "new" values need to be set to current when entering menu mode for the first time
-// need flag for first entry into menu mode
+// "new" values are set to current when entering menu mode for the first time
 int newHour12 = 0;
 int newHour24 = 0;
 int newMinute = 0;
@@ -195,38 +200,43 @@ void loop () {
   setDisplay(); // change display state according to current menu mode    
   setStyle(dispHour24, dispMinute); // set color and brightness based on displayed time 
 
-    if (displayState == STATE_DISP_TIME){
+    int renderOpt = 0;
+  if ( alarmState == true) renderOpt = RENDER_ON;
+  else if (alarmState == false) renderOpt = RENDER_OFF;
+
+
+  if (displayState == STATE_DISP_TIME){
     renderTime(nowHour12, nowMinute, nowPM);
   }
   else if (displayState == STATE_DISP_DATE){
-    renderOther();
-  }
+    renderOther(RENDER_NONE);
+  }  
   else if (displayState == STATE_ALARM_INIT){
-    renderOther();
+    renderOther(renderOpt);
   }
   else if (displayState == STATE_ALARM_SET){
     renderTime(alarmHour12, alarmMinute, alarmPM);
   }
   else if (displayState == STATE_TIME_INIT){
-    renderOther();
+    renderOther(RENDER_NONE);
   }
   else if (displayState == STATE_TIME_SET){
     renderTime(newHour12, newMinute, newPM);
   }
   else if (displayState == STATE_DATE_INIT){
-    renderOther();
+    renderOther(RENDER_NONE);
   }
   else if (displayState == STATE_DATE_YEAR){
-    renderOther();
+    renderOther(RENDER_NONE);
   }
   else if (displayState == STATE_DATE_MONTH){
-    renderOther();
+    renderOther(RENDER_NONE);
   }
   else if (displayState == STATE_DATE_DAY){
-    renderOther();
+    renderOther(RENDER_NONE);
   }
   else if (displayState == STATE_EXIT){
-    renderOther();
+    renderOther(RENDER_NONE);
   }
 
   delay(50); // wait for 100ms
@@ -333,7 +343,7 @@ int detectTap(){
   else if (py >=11 && py <=16)  verticalRegion = 3;          // y pixel 11-16 = message / ampm area
   else                          verticalRegion = 0;
 
-  // define new virtual button states based on region taped
+  // define new virtual button states based on region tapped
 
   if (verticalRegion == 1){
     if (horizontalRegion == 1) tapZone = TAP_HOURPLUS;
@@ -361,13 +371,14 @@ int detectTap(){
     tapZone = TAP_NONE;
   }
 
+
   menuActive = true;
   tapStartMillis = millis();
   menuStartMillis = millis();
   tapActive = true;                                       // tap event is active
   tapNew = true;                                          // this is a new tap
   menuTaps++;
-  
+
   // just in case we're going to set the time, set variables according to time
   // that we entered the menu
   if ( menuTaps == 1 ){
@@ -389,7 +400,7 @@ int detectTap(){
 // depending on current display state, and location of tap
 
 void doActions(){
-  
+
   // if this isn't a new tap, get outta here.
   if ( tapNew == false){
     return;
@@ -399,7 +410,7 @@ void doActions(){
 
   int backState = 0;
   int nextState = 0;
-  
+
   if (displayState == STATE_DISP_TIME){
     backState = STATE_DISP_TIME;
     nextState = STATE_ALARM_INIT;
@@ -424,7 +435,7 @@ void doActions(){
     backState = STATE_DATE_INIT;
     nextState = STATE_ALARM_INIT;
   }
-  
+
   switch(displayState){
 
     // tapping in the message area will toggle the alarm on/off
@@ -519,6 +530,16 @@ void doActions(){
 
     case TAP_MESSAGE:
       // code to commit alarm to RTC should go here!!
+
+      if (alarmPM == false){
+        if (alarmHour12 == 12) alarmHour24 = 0; // 12:00am = 00.00
+        else alarmHour24 = alarmHour12;         // 1:00am-11:59am = 01.00-11.59 
+      }
+      else{
+        if (alarmHour12 == 12) alarmHour24 = 12; // 12:00pm = 12.00
+        else alarmHour24 = alarmHour12 + 12;         // 1:00pm-11:59pm = 13.00-23.59
+      }
+
       alarmState = true;
       menuActive = false;
       menuTaps = 0;
@@ -532,7 +553,7 @@ void doActions(){
     break;
 
   case STATE_TIME_INIT:
-  
+
     // go backward in menu
     if (tapZone == TAP_HOURPLUS || tapZone == TAP_HOURMINUS){
       newDisplayState = backState;
@@ -550,7 +571,7 @@ void doActions(){
     break;
 
   case STATE_TIME_SET:
-  
+
     switch(tapZone){
 
     case TAP_HOURPLUS:
@@ -649,16 +670,18 @@ void doActions(){
 
     // upper right digit region: increment month
     if (tapZone == TAP_MINUTEPLUS){
-      if(newMonth<12) newMonth++; else newMonth = 1;
+      if(newMonth<12) newMonth++; 
+      else newMonth = 1;
       newDisplayState = STATE_DATE_MONTH;
     }
 
     // lower right digit region: decrement year
     else if (tapZone == TAP_MINUTEMINUS){
-      if(newMonth>1) newMonth--; else newMonth = 12;
+      if(newMonth>1) newMonth--; 
+      else newMonth = 12;
       newDisplayState = STATE_DATE_MONTH;
     }
-    
+
     // left digit region: blank, so do nothing
     else if (tapZone == TAP_HOURPLUS || tapZone == TAP_HOURMINUS){
       newDisplayState = STATE_DATE_MONTH;
@@ -674,13 +697,16 @@ void doActions(){
     // upper right digit region: increment day
     if (tapZone == TAP_MINUTEPLUS){
       if (newMonth == 4 || newMonth == 6 || newMonth == 9 || newMonth == 11){
-        if (newDay < 30) newDay++; else newDay = 1;
+        if (newDay < 30) newDay++; 
+        else newDay = 1;
       }
       else if (newMonth == 2){
-        if (newDay < 28) newDay++; else newDay = 1;
+        if (newDay < 28) newDay++; 
+        else newDay = 1;
       }
       else{
-        if (newDay < 31) newDay++; else newDay = 1;
+        if (newDay < 31) newDay++; 
+        else newDay = 1;
       }
       newDisplayState = STATE_DATE_DAY;
     }
@@ -688,17 +714,20 @@ void doActions(){
     // lower right digit region: decrement day
     else if (tapZone == TAP_MINUTEMINUS){
       if (newMonth == 4 || newMonth == 6 || newMonth == 9 || newMonth == 11){
-        if (newDay > 1) newDay--; else newDay = 30;
+        if (newDay > 1) newDay--; 
+        else newDay = 30;
       }
       else if (newMonth == 2){
-        if (newDay > 1) newDay--; else newDay = 28;
+        if (newDay > 1) newDay--; 
+        else newDay = 28;
       }
       else{
-        if (newDay > 1) newDay--; else newDay = 31;
+        if (newDay > 1) newDay--; 
+        else newDay = 31;
       }
       newDisplayState = STATE_DATE_DAY;
     }
-    
+
     // left digit region: blank, so do nothing
     else if (tapZone == TAP_HOURPLUS || tapZone == TAP_HOURMINUS){
       newDisplayState = STATE_DATE_DAY;
@@ -711,7 +740,7 @@ void doActions(){
       menuActive = false;
       menuTaps = 0;
     }
-    
+
     break;
 
   case STATE_EXIT:
@@ -797,6 +826,8 @@ void setDisplay(){
       }
 
       // change zeros to O's for better readability
+      if (msg[1] == '0') msg[3] = 'O';
+      if (msg[2] == '0') msg[4] = 'O';
       if (msg[3] == '0') msg[3] = 'O';
       if (msg[4] == '0') msg[4] = 'O';
 
@@ -988,7 +1019,7 @@ void setDisplay(){
     msg[8] = 'M';
     break;
 
-case STATE_TIME_INIT:
+  case STATE_TIME_INIT:
     // use renderOther
     dig[1] = '<';
     dig[2] = ' ';
@@ -1003,9 +1034,9 @@ case STATE_TIME_INIT:
     msg[6] = 'S';
     msg[7] = 'E';
     msg[8] = 'T';
-break;
+    break;
 
-case STATE_TIME_SET:
+  case STATE_TIME_SET:
     // use renderTime
     dispHour12 = newHour12;
     dispMinute = newMinute;
@@ -1020,9 +1051,9 @@ case STATE_TIME_SET:
     else msg[7] = 'P';
     msg[8] = 'M';
     break;
-break;
+    break;
 
-case STATE_DATE_INIT:
+  case STATE_DATE_INIT:
     // use renderOther
     dig[1] = '<';
     dig[2] = ' ';
@@ -1037,9 +1068,9 @@ case STATE_DATE_INIT:
     msg[6] = 'S';
     msg[7] = 'E';
     msg[8] = 'T';
-break;
+    break;
 
-case STATE_DATE_YEAR:
+  case STATE_DATE_YEAR:
     // use renderOther
     dig[1] = '<';
     dig[2] = ' ';
@@ -1054,9 +1085,9 @@ case STATE_DATE_YEAR:
     msg[6] = ' ';
     msg[7] = '>';
     msg[8] = '>';
-break;
+    break;
 
-case STATE_DATE_MONTH:
+  case STATE_DATE_MONTH:
     // use renderOther
     dig[1] = '<';
     dig[2] = ' ';
@@ -1071,9 +1102,9 @@ case STATE_DATE_MONTH:
     msg[6] = ' ';
     msg[7] = '>';
     msg[8] = '>';
-break;
+    break;
 
-case STATE_DATE_DAY:
+  case STATE_DATE_DAY:
     // use renderOther
     dig[1] = '<';
     dig[2] = ' ';
@@ -1088,9 +1119,9 @@ case STATE_DATE_DAY:
     msg[6] = 'D';
     msg[7] = 'A';
     msg[8] = 'Y';
-break;
+    break;
 
-case STATE_EXIT:
+  case STATE_EXIT:
     // use renderOther
     dig[1] = '<';
     dig[2] = ' ';
@@ -1105,7 +1136,7 @@ case STATE_EXIT:
     msg[6] = ' ';
     msg[7] = ' ';
     msg[8] = ' ';
-break;
+    break;
 
 
   default:
@@ -1130,7 +1161,7 @@ void setStyle(int hour24, int minute) {
   else if (hour24 <= 21) ledMatrix.pwm(5); // 8:00p to 9:59p dimmer
   else if (hour24 <= 24) ledMatrix.pwm(1); // 10:00p to 11:59p minimum brightness
 
-  // adjust the color based on the time of day
+  // adjust the color based on the time
   if (hour24 <= 6) digit_color = RED; // 12:00a to 6:59a red digits
   else if (hour24 <= 19) digit_color = GREEN; // 7:00a to 7:59p green digits 
   else if (hour24 <= 24) digit_color = RED; // 8:00p to 11:59p red digits
@@ -1138,7 +1169,7 @@ void setStyle(int hour24, int minute) {
   // set am/pm color .. this should probably = digit_color if there is an alarm display active in message area
   //ampm_color = digit_color;
   ampm_color = ORANGE;
-
+  
   if (digit_color == GREEN) message_color = RED;
   if (digit_color == RED) message_color = GREEN;
 
@@ -1170,6 +1201,12 @@ void renderTime(int hour12, int minute, int pm){
   ledMatrix.rect(2,9,20,13,BLACK);
   ledMatrix.rect(3,8,19,12,BLACK);
 
+  // clear the digit area
+  ledMatrix.rect(10,1,20,5,BLACK);
+  ledMatrix.rect(11,2,19,4,BLACK);
+  ledMatrix.rect(12,3,18,3,BLACK);
+  ledMatrix.rect(13,4,17,2,BLACK);
+
 
   // set the hours digits
   itoa(hour12, buf, 10);
@@ -1200,7 +1237,24 @@ void renderTime(int hour12, int minute, int pm){
   msg[7] = ampm;
   msg[8] = letter_m;  
 
-  //  
+  int hour24 = 0;
+  
+  if (pm == false){
+    if (hour12 == 12) hour24 = 0; // 12:00am = 00.00
+    else hour24 = hour12;         // 1:00am-11:59am = 01.00-11.59 
+  }
+  else{
+    if (hour12 == 12) hour24 = 12; // 12:00pm = 12.00
+    else hour24 = hour12 + 12;         // 1:00pm-11:59pm = 13.00-23.59
+  }
+
+  // adjust the color based on the time
+  if (hour24 <= 6) digit_color = RED; // 12:00a to 6:59a red digits
+  else if (hour24 <= 19) digit_color = GREEN; // 7:00a to 7:59p green digits 
+  else if (hour24 <= 24) digit_color = RED; // 8:00p to 11:59p red digits
+  
+  if (digit_color == GREEN) message_color = RED;
+  if (digit_color == RED) message_color = GREEN;
 
   // fist digit of hour
   if (dig[1] == '1') ledMatrix.putchar(2,-2,'1',digit_color,6);
@@ -1212,15 +1266,32 @@ void renderTime(int hour12, int minute, int pm){
   ledMatrix.putchar(18,-2,dig[3],digit_color,7); // first digit of minute
   ledMatrix.putchar(25,-2,dig[4],digit_color,7); // second digit of minute
 
+  int shift = 0;
+
+  // on main screen, adjust the color of the alarm time to red or green
+  if (alarmState == true && displayState == STATE_DISP_TIME){  
+    // adjust the color based on the time of day
+    if (alarmHour24 <= 6) message_color = RED; // 12:00a to 6:59a red digits
+    else if (alarmHour24 <= 19) message_color = GREEN; // 7:00a to 7:59p green digits 
+    else if (alarmHour24 <= 24) message_color = RED; // 8:00p to 11:59p red digits
+    shift = 2; // shift the minutes over to make room for the : 
+  }
+
+
   // draw the characters of the message area if a message is active
   // otherwise, black out the message area
   ledMatrix.setfont(FONT_4x6);
   if (msg[1] != '\0') ledMatrix.putchar(0,11,msg[1],message_color);
   if (msg[2] != '\0') ledMatrix.putchar(4,11,msg[2],message_color);
-  if (msg[3] != '\0') ledMatrix.putchar(8,11,msg[3],message_color);
-  if (msg[4] != '\0') ledMatrix.putchar(12,11,msg[4],message_color);
-  if (msg[5] != '\0') ledMatrix.putchar(16,11,msg[5],message_color);
-  if (msg[6] != '\0') ledMatrix.putchar(20,11,msg[6],message_color);
+  if (msg[3] != '\0') ledMatrix.putchar(8+shift,11,msg[3],message_color);
+  if (msg[4] != '\0') ledMatrix.putchar(12+shift,11,msg[4],message_color);
+  if (msg[5] != '\0') ledMatrix.putchar(16+shift,11,msg[5],message_color);
+  if (msg[6] != '\0') ledMatrix.putchar(20+shift,11,msg[6],message_color);
+
+  if (alarmState == true && displayState == STATE_DISP_TIME){  
+    ledMatrix.plot(8,12,ORANGE); // dot for alarm
+    ledMatrix.plot(8,14,ORANGE); // dot for alarm
+  }
 
   // draw the AM or PM
   ledMatrix.setfont(FONT_4x6);
@@ -1235,10 +1306,10 @@ void renderTime(int hour12, int minute, int pm){
 
 
 //////////////////////////////////////////////////////////////////////////////////
-// renderOther()
+// renderOther( int renderOption )
 // draw the screen, dig[] and msg[] defined in setDisplay()
 
-void renderOther(){    
+void renderOther( int renderOption ){    
 
   // clear any prior tap dots
   ledMatrix.plot(dot[2],dot[3],BLACK); // clear any prior tap dots
@@ -1252,6 +1323,12 @@ void renderOther(){
   // clear the time colon
   ledMatrix.plot(16,3,BLACK); // hour:min colon, top
   ledMatrix.plot(16,6,BLACK); // hour:min colon, bottom
+
+  // clear the digit area
+  ledMatrix.rect(10,1,20,5,BLACK);
+  ledMatrix.rect(11,2,19,4,BLACK);
+  ledMatrix.rect(12,3,18,3,BLACK);
+  ledMatrix.rect(13,4,17,2,BLACK);
 
 
   // large digits at top of screen
@@ -1272,6 +1349,16 @@ void renderOther(){
   ledMatrix.putchar(24,11,msg[7],ampm_color,6);
   ledMatrix.putchar(28,11,msg[8],ampm_color,6);
 
+  if ( renderOption == RENDER_ON ){
+    ledMatrix.putchar(12,1,'O',message_color);
+    ledMatrix.putchar(16,1,'N',message_color);
+  }
+  else if ( renderOption == RENDER_OFF){
+    ledMatrix.putchar(11,1,'O',message_color);
+    ledMatrix.putchar(15,1,'F',message_color);
+    ledMatrix.putchar(19,1,'F',message_color);
+  }
+
 
   // send the characters to the display, and draw the screen
   ledMatrix.sendframe();
@@ -1289,4 +1376,5 @@ void renderOther(){
  * dot[3] = dot[1];
  * }
  ***/
+
 
