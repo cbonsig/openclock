@@ -27,8 +27,9 @@
 // 05 mar 2013 . debug . display logic refinement
 // 07 mar 2013 . various fixes . added on/off for alarm . fixed colors . added RTC commit for time
 //               added : between hour and minute for alarm display
-//               tbd: fix date set display
-//                    commit alarm to RTC?
+//               tbd: fix date set display DONE.
+//                    commit alarm to RTC or EEPROM?
+//                    set time sometimes starts at 0:00 instead of current time (???)
 //                    add wave board for and alarm trigger code
 //                    perhaps 12h / 24 h mode
 
@@ -71,7 +72,7 @@ TouchScreen ts = TouchScreen(XP, YP, XM, YM, 90);
 unsigned long menuStartMillis;
 unsigned long tapStartMillis;
 
-int menuTimeout = 5000; // 5 second timeout for menu
+int menuTimeout = 10000; // 5 second timeout for menu
 int tapTimeout = 500; // 0.1 second timeout for tap event
 
 // initialize array to hold [x, y, prior_x, prior_y] data for tap location
@@ -95,8 +96,13 @@ int pixel[2];
 #define TAP_AMPM        5
 #define TAP_MESSAGE     6
 #define TAP_WTF         7
-
 int tapZone = TAP_NONE;
+
+// define tapCenter "button" numbers
+
+#define TAP_CENTER      8
+int tapCenter = TAP_NONE;
+
 boolean tapNew = false;
 
 boolean alarmState = false;
@@ -153,8 +159,8 @@ int dispHour24 = 0;
 int dispMinute = 0;
 int dispPM = 0;
 
-int alarmHour12 = 6;
-int alarmHour24 = 6;
+int alarmHour12 = 7;
+int alarmHour24 = 7;
 int alarmMinute = 0;
 int alarmPM = 0;
 
@@ -369,11 +375,20 @@ int detectTap(){
     if (horizontalRegion == 4) tapZone = TAP_AMPM;
   }
   else if(verticalRegion == 0 || horizontalRegion == 0){
-    tapZone = 0;
     tapZone = TAP_WTF;
   }
   else{
     tapZone = TAP_NONE;
+  }
+  
+  // check if tap is in the middle, as for toggling ON/OFF in alarm init screen
+  if (verticalRegion == 1 || verticalRegion == 2){
+    if (horizontalRegion == 2) tapCenter = TAP_CENTER;
+    else if (horizontalRegion == 3) tapCenter = TAP_CENTER;
+    else tapCenter = TAP_NONE;
+  }
+  else{
+    tapCenter = TAP_NONE;
   }
 
 
@@ -472,7 +487,14 @@ void doActions(){
   case STATE_ALARM_INIT: // state 20
 
     // go backward in menu
-    if ( tapZone == TAP_HOURPLUS || tapZone == TAP_HOURMINUS){
+    
+    if (tapCenter == TAP_CENTER){
+      if (alarmState == false) alarmState = true;
+      else if (alarmState == true) alarmState = false;
+      newDisplayState = STATE_ALARM_INIT;
+    }
+    
+    else if ( tapZone == TAP_HOURPLUS || tapZone == TAP_HOURMINUS){
       newDisplayState = backState;
     }
 
@@ -686,7 +708,7 @@ void doActions(){
 
     // lower digit region: decrement year
     else if (tapZone == TAP_HOURMINUS || tapZone == TAP_MINUTEMINUS){
-      newYear--;
+      if (newYear > 2013) newYear--;
       newDisplayState = STATE_DATE_YEAR;
     }
 
@@ -765,12 +787,12 @@ void doActions(){
 
     // message area: commit to RTC and return to normal
     else{
-      
+
       //commit to RTC
       setTime(hour(now()), minute(now()), second(now()), newDay, newMonth, newYear);      
       RTC.set(now());
 
-      
+
       newDisplayState = STATE_DISP_TIME;
       menuActive = false;
       menuTaps = 0;
@@ -1086,7 +1108,7 @@ void setDisplay(){
     else msg[7] = 'P';
     msg[8] = 'M';
     break;
-    break;
+    //break;
 
   case STATE_DATE_INIT:
     // use renderOther
@@ -1107,10 +1129,14 @@ void setDisplay(){
 
   case STATE_DATE_YEAR:
     // use renderOther
-    dig[1] = '<';
-    dig[2] = ' ';
-    dig[3] = ' ';
-    dig[4] = '>';
+
+    dig[1] = '2';
+    dig[2] = '0';
+
+    // set the year digits
+    itoa(newYear-2000, buf, 10);
+    dig[3] = buf[0];
+    dig[4] = buf[1];
 
     msg[1] = 'Y';
     msg[2] = 'E';
@@ -1124,10 +1150,19 @@ void setDisplay(){
 
   case STATE_DATE_MONTH:
     // use renderOther
-    dig[1] = '<';
+    
+    dig[1] = ' ';
     dig[2] = ' ';
-    dig[3] = ' ';
-    dig[4] = '>';
+    
+    itoa(newMonth, buf, 10);
+    if(newMonth < 10){
+      dig[3] = ' ';
+      dig[4] = buf[0];
+    }
+    else{
+      dig[3] = buf[0];
+      dig[4] = buf[1];
+    }
 
     msg[1] = 'M';
     msg[2] = 'O';
@@ -1141,10 +1176,19 @@ void setDisplay(){
 
   case STATE_DATE_DAY:
     // use renderOther
-    dig[1] = '<';
+
+    dig[1] = ' ';
     dig[2] = ' ';
-    dig[3] = ' ';
-    dig[4] = '>';
+    
+    itoa(newDay, buf, 10);
+    if(newDay < 10){
+      dig[3] = ' ';
+      dig[4] = buf[0];
+    }
+    else{
+      dig[3] = buf[0];
+      dig[4] = buf[1];
+    }
 
     msg[1] = 'D';
     msg[2] = 'O';
@@ -1186,6 +1230,7 @@ void setDisplay(){
 //////////////////////////////////////////////////////////////////////////////////
 // setStyle()
 // set color, brightness and boldness based on hour and minute passed to function
+// ** intervene here to adjust brightness based on photoresistor reading **
 
 void setStyle(int hour24, int minute) {
 
@@ -1411,6 +1456,7 @@ void renderOther( int renderOption ){
  * dot[3] = dot[1];
  * }
  ***/
+
 
 
 
