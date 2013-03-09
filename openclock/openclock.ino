@@ -27,9 +27,8 @@
 // 05 mar 2013 . debug . display logic refinement
 // 07 mar 2013 . various fixes . added on/off for alarm . fixed colors . added RTC commit for time
 //               added : between hour and minute for alarm display
-//               tbd: fix date set display DONE.
-//                    commit alarm to RTC or EEPROM?
-//                    set time sometimes starts at 0:00 instead of current time (???)
+// 08 mar 2013 . fixed year/month/day date set rendrering . fixed set time/date 0:00 bug (i think)
+//               tbd: commit alarm to RTC or EEPROM?
 //                    add wave board for and alarm trigger code
 //                    perhaps 12h / 24 h mode
 
@@ -49,7 +48,6 @@
 
 // initialize the 16x32 display
 // for reasons that I do not understand, moving any of these pins to 8 or higher fails
-
 
 ht1632c ledMatrix = ht1632c(&PORTD, 7, 6, 0, 1, GEOM_32x16, 2); 
 //====================================================================================    
@@ -72,16 +70,16 @@ TouchScreen ts = TouchScreen(XP, YP, XM, YM, 90);
 unsigned long menuStartMillis;
 unsigned long tapStartMillis;
 
-int menuTimeout = 10000; // 5 second timeout for menu
-int tapTimeout = 500; // 0.1 second timeout for tap event
+int menuTimeout = 10000; // 10 second timeout for menu
+int tapTimeout = 250; // 0.25 second timeout for tap event
 
 // initialize array to hold [x, y, prior_x, prior_y] data for tap location
-int dot[4] = {
+byte dot[4] = {
   0,0,0,0}; 
 
 // initialize array to hold mapped coordinates for tap location
 // pixel[0,1] = [x,y] pixel ... x=0-31, y=0-15
-int pixel[2];
+byte pixel[2];
 
 // define hour at which clock digits change from red to green in morning
 #define GREEN_HOUR      7
@@ -96,12 +94,12 @@ int pixel[2];
 #define TAP_AMPM        5
 #define TAP_MESSAGE     6
 #define TAP_WTF         7
-int tapZone = TAP_NONE;
+byte tapZone = TAP_NONE;
 
 // define tapCenter "button" numbers
 
 #define TAP_CENTER      8
-int tapCenter = TAP_NONE;
+byte tapCenter = TAP_NONE;
 
 boolean tapNew = false;
 
@@ -127,16 +125,17 @@ boolean alarmState = false;
 #define RENDER_OFF 1
 #define RENDER_ON 2
 
-int displayState = STATE_DISP_TIME;  // 0 if in normal mode, 1+ for menu choices
-int menuTaps = true;  // number of taps since menu was last activated
+byte displayState = STATE_DISP_TIME;  // 0 if in normal mode, 1+ for menu choices
+
+byte menuTaps = 0;  // number of taps since menu was last activated
 
 boolean tapActive = false; // true if screen has been taped in last tapTimeout (0.5) seconds, else false
 boolean menuActive = false; // true while menu is active
 
 // initialize colors    
-int digit_color = GREEN;
-int message_color = RED;
-int ampm_color = GREEN;
+byte digit_color = GREEN;
+byte message_color = RED;
+byte ampm_color = GREEN;
 
 // initialize values for each character on display
 //   ---------------------------------------------------------
@@ -149,29 +148,29 @@ int ampm_color = GREEN;
 char dig[6]  = "01234";
 char msg[10] = "012345678";
 
-int nowHour12 = 0;
-int nowHour24 = 0;
-int nowMinute = 0;
-int nowPM = 0;
+byte nowHour12 = 0;
+byte nowHour24 = 0;
+byte nowMinute = 0;
+byte nowPM = 0;
 
-int dispHour12 = 0;
-int dispHour24 = 0;
-int dispMinute = 0;
-int dispPM = 0;
+byte dispHour12 = 0;
+byte dispHour24 = 0;
+byte dispMinute = 0;
+byte dispPM = 0;
 
-int alarmHour12 = 7;
-int alarmHour24 = 7;
-int alarmMinute = 0;
-int alarmPM = 0;
+byte alarmHour12 = 7;
+byte alarmHour24 = 7;
+byte alarmMinute = 0;
+byte alarmPM = 0;
 
 // "new" values are set to current when entering menu mode for the first time
-int newHour12 = 0;
-int newHour24 = 0;
-int newMinute = 0;
-int newPM = 0;
-int newYear = 2013;
-int newMonth = 1;
-int newDay = 1;
+byte newHour12 = 0;
+byte newHour24 = 0;
+byte newMinute = 0;
+byte newPM = 0;
+byte newYear = 2013;
+byte newMonth = 1;
+byte newDay = 1;
 
 
 //////////////////////////////////////////////////////////////////////////////////
@@ -406,9 +405,9 @@ int detectTap(){
     newHour24 = nowHour24;
     newMinute = nowMinute;
     newPM = nowPM;
-    newYear = year();
-    newMonth = month();
-    newDay = day();
+    newYear = year(now());
+    newMonth = month(now());
+    newDay = day(now());
   }
 
   return tapZone;
