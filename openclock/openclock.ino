@@ -94,7 +94,7 @@ byte pixel[2];
 #define TAP_AMPM        5
 #define TAP_MESSAGE     6
 #define TAP_WTF         7
-byte tapZone = TAP_NONE;
+int tapZone = TAP_NONE;
 
 // define tapCenter "button" numbers
 
@@ -125,7 +125,7 @@ boolean alarmState = false;
 #define RENDER_OFF 1
 #define RENDER_ON 2
 
-byte displayState = STATE_DISP_TIME;  // 0 if in normal mode, 1+ for menu choices
+int displayState = STATE_DISP_TIME;  // 0 if in normal mode, 1+ for menu choices
 
 byte menuTaps = 0;  // number of taps since menu was last activated
 
@@ -594,6 +594,11 @@ void doActions(){
     // go forward in menu
     else if ( tapZone == TAP_MINUTEPLUS || tapZone == TAP_MINUTEMINUS){
       newDisplayState = nextState;
+    }
+
+    // move to alarm set mode
+    else if ( tapZone == TAP_MESSAGE || tapZone == TAP_AMPM){
+      newDisplayState = STATE_TIME_SET;
     }
 
     // move to alarm set mode
@@ -1314,8 +1319,8 @@ void renderTime(int hour12, int minute, int pm){
   else ampm = 'P';
 
   msg[7] = ampm;
-  msg[8] = letter_m;  
-
+  msg[8] = letter_m; 
+ 
   int hour24 = 0;
 
   if (pm == false){
