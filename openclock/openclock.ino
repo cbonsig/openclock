@@ -168,7 +168,7 @@ byte newHour12 = 0;
 byte newHour24 = 0;
 byte newMinute = 0;
 byte newPM = 0;
-byte newYear = 2013;
+int newYear = 2013;
 byte newMonth = 1;
 byte newDay = 1;
 
