@@ -1,5 +1,43 @@
-// simple clock using 16x32 bicolor LED matrix, Chronodot, and Arduino
-// craig bonsignore
+/*
+	openclock.ino
+
+        An open hardware, Ardunio powered, touchscreen controlled, large display, multicolor 
+        LED matrix alarm clock. Intuitive design, adaptive color and brightness, and easy 
+        to see and use with uncorrected vision.
+
+	Sure Electronics DP14112 bicolor 16x32 LED display
+        * 7 - DATA
+        * 6 - WR
+        * 0 - CLK
+        * 1 - CS
+        * +5V
+        * GND
+        
+        N010-0554-T048 Fujitsu touch panel
+        * A0 - XM
+        * A1 - YP
+        * A2 - XP
+        * A3 - YM
+        
+        Chronodot v2.1 DS3231SN Real Time Clock
+	* A4 - I2C SDA
+        * A5 - I2C SCL
+        * +3.3V
+        * GND
+        
+        Adafruit WaveShield (not working!)
+        * 2, 3, 4, 5 - DAC
+        * 10 - SD card
+        * 13, 12, 11 - SD card
+        
+
+        Craig Bonsignore
+	http://clock.bonsignore.com
+        http://github.com/cbonsig/openclock
+
+*/
+
+
 // 7 may 2012 . change digits to red at night . move pin 4 to 0 . move pin 5 to 1
 // 22 may 2012 . change from bold to normal font during sleeping hours
 // 16 june 2012 . map touchscreen press to pixels
@@ -28,54 +66,48 @@
 // 07 mar 2013 . various fixes . added on/off for alarm . fixed colors . added RTC commit for time
 //               added : between hour and minute for alarm display
 // 08 mar 2013 . fixed year/month/day date set rendrering . fixed set time/date 0:00 bug (i think)
+// 11 mar 2013 . improved commenting
 //               tbd: commit alarm to RTC or EEPROM?
 //                    add wave board for and alarm trigger code
 //                    perhaps 12h / 24 h mode
 
 
-#include <Wire.h> // I2C library for Chronodot
-#include <ht1632c.h> // http://code.google.com/p/ht1632c/
-#include <TouchScreen.h> // https://github.com/adafruit/Touch-Screen-Library
+#include <Time.h>         // The Arduino Time library, http://www.arduino.cc/playground/Code/Time
+#include <DS1307RTC.h>    // For optional RTC module. (This library included with the Arduino Time library)
 
-#include <Time.h>       // The Arduino Time library, http://www.arduino.cc/playground/Code/Time
-#include <DS1307RTC.h>  // For optional RTC module. (This library included with the Arduino Time library)
-
-
-//====================================================================================
-// message from redlegoman
-// this following comment from you interested me too, so I did a little research.
-// go here http://www.arduino.cc/en/Reference/PortManipulation for an explanation  
-
-// initialize the 16x32 display
-// for reasons that I do not understand, moving any of these pins to 8 or higher fails
+#include <Wire.h>         // Standard I2C library for Chronodot
+#include <ht1632c.h>      // http://code.google.com/p/ht1632c/
+#include <TouchScreen.h>  // https://github.com/adafruit/Touch-Screen-Library
 
 ht1632c ledMatrix = ht1632c(&PORTD, 7, 6, 0, 1, GEOM_32x16, 2); 
-//====================================================================================    
-// initialize the Chronodot real time clock
-//Chronodot RTC; 
 
-// For this orientation, the N010-0554-T048 Fujitsu tap panel is oriented with the tap film side up
+// TOUCHSCREEN PINS
+// For this orientation, the N010-0554-T048 Fujitsu touch panel is oriented with the touch film side up
 // and the ribbon to the left. The four wires, from top to bottom, correspond to XM, YP, XP, YM
-#define XM A0  // black // must be an analog pin, use "An" notation!
-#define YP A1  // green // must be an analog pin, use "An" notation!
-#define XP A2   // yellow // can be a digital pin
-#define YM A3   // blue // can be a digital pin
+#define XM A0             // black.  must be an analog pin, use "An" notation!
+#define YP A1             // green.  must be an analog pin, use "An" notation!
+#define XP A2             // yellow. can be a digital pin
+#define YM A3             // blue.   can be a digital pin
 
-// For better pressure precision, we need to know the resistance
-// between X+ and X- Use any multimeter to read it
-// 90 ohms between XM and XP
+// TOUCHSCREEN CALIBRATION
+// determined by trial and error for touch panel and Sure Electronics DP14112 
+#define XCAL_LEFT   75    // X touchscreen reading corresponding to pixel column 0
+#define XCAL_RIGHT  930   // X touchscreen reading corresponding to pixel column 31
+#define YCAL_TOP    300   // Y touchscreen reading corresponding to pixel row 0
+#define YCAL_BOTTOM 770   // Y touchscreen reading corresponding to pixel row 15
+
+// TOUCHSCREEN FUNCTION
+// Final parameter (90) is the resistance between X+ and X- in ohms
 TouchScreen ts = TouchScreen(XP, YP, XM, YM, 90);
 
-// new millis() based timer variables
+// TIMER VARIABLES
 unsigned long menuStartMillis;
 unsigned long tapStartMillis;
-
 int menuTimeout = 10000; // 10 second timeout for menu
 int tapTimeout = 250; // 0.25 second timeout for tap event
 
 // initialize array to hold [x, y, prior_x, prior_y] data for tap location
-byte dot[4] = {
-  0,0,0,0}; 
+int dot[4] = {0,0,0,0}; 
 
 // initialize array to hold mapped coordinates for tap location
 // pixel[0,1] = [x,y] pixel ... x=0-31, y=0-15
@@ -85,7 +117,6 @@ byte pixel[2];
 #define GREEN_HOUR      7
 
 // define tapZone "button" numbers
-
 #define TAP_NONE        0
 #define TAP_HOURPLUS    1
 #define TAP_HOURMINUS   2
@@ -97,16 +128,13 @@ byte pixel[2];
 int tapZone = TAP_NONE;
 
 // define tapCenter "button" numbers
-
 #define TAP_CENTER      8
 byte tapCenter = TAP_NONE;
-
 boolean tapNew = false;
 
 boolean alarmState = false;
 
 // define display states
-
 #define STATE_DISP_TIME  0
 #define STATE_DISP_DATE  10
 #define STATE_ALARM_INIT  20
@@ -120,7 +148,6 @@ boolean alarmState = false;
 #define STATE_EXIT  99
 
 // define render options
-
 #define RENDER_NONE 0
 #define RENDER_OFF 1
 #define RENDER_ON 2
@@ -148,22 +175,25 @@ byte ampm_color = GREEN;
 char dig[6]  = "01234";
 char msg[10] = "012345678";
 
+// variables for the current time
 byte nowHour12 = 0;
 byte nowHour24 = 0;
 byte nowMinute = 0;
 byte nowPM = 0;
 
+// variables for the displayed time
 byte dispHour12 = 0;
 byte dispHour24 = 0;
 byte dispMinute = 0;
 byte dispPM = 0;
 
+// variables for the alarm time
 byte alarmHour12 = 7;
 byte alarmHour24 = 7;
 byte alarmMinute = 0;
 byte alarmPM = 0;
 
-// "new" values are set to current when entering menu mode for the first time
+// variables for new time/date when setting time
 byte newHour12 = 0;
 byte newHour24 = 0;
 byte newMinute = 0;
@@ -179,22 +209,19 @@ byte newDay = 1;
 
 void setup () {
 
-  pinMode(7, OUTPUT); // initialize ht1632c pin
-  pinMode(6, OUTPUT); // initialize ht1632c pin
-  pinMode(0, OUTPUT); // initialize ht1632c pin
-  pinMode(1, OUTPUT); // initialize ht1632c pin
+  pinMode(7, OUTPUT);         // initialize ht1632c pin
+  pinMode(6, OUTPUT);         // initialize ht1632c pin
+  pinMode(0, OUTPUT);         // initialize ht1632c pin
+  pinMode(1, OUTPUT);         // initialize ht1632c pin
 
-  Wire.begin(); // initialize I2C
+  Wire.begin();               // initialize I2C
   setSyncProvider(RTC.get);   // the function to get the time from the RTC
 
-  ledMatrix.clear(); // clear the display
-  ledMatrix.pwm(5); // set brightness (max=15)
+  ledMatrix.clear();          // clear the display
+  ledMatrix.pwm(5);           // set brightness (max=15)
 
   // the following line sets the RTC to the date & time this sketch was compiled
   //RTC.adjust(DateTime(__DATE__, __TIME__));
-
-  // debug: initialize serial
-  //Serial.begin(9600);
 
 }
 
@@ -204,17 +231,29 @@ void setup () {
 
 void loop () {
 
-  currentTime(); // read current time and set global variables for hour, minute, am/pm         
-  detectTap(); // detect tap state
-  doActions(); // act upon new tap and set new display state
-  setDisplay(); // change display state according to current menu mode    
-  setStyle(dispHour24, dispMinute); // set color and brightness based on displayed time 
+  currentTime();                        // read current time and set global
+                                        // variables for hour, minute, am/pm    
+                                        
+  detectTap();                          // detect tap state
+  
+  doActions();                          // act upon new tap and set new 
+                                        // display state
+                                        
+  setDisplay();                         // change display state according to 
+                                        // current menu mode    
+                                        
+  setStyle(dispHour24, dispMinute);     // set color and brightness based
+                                        // on displayed time 
 
-    int renderOpt = 0;
+  // set main screen rendering flag based on alarm state
+  
+  int renderOpt = RENDER_NONE;
   if ( alarmState == true) renderOpt = RENDER_ON;
   else if (alarmState == false) renderOpt = RENDER_OFF;
 
-
+  // call the relevant creen rendering function
+  // based on the current display state
+  
   if (displayState == STATE_DISP_TIME){
     renderTime(nowHour12, nowMinute, nowPM);
   }
@@ -248,8 +287,7 @@ void loop () {
   else if (displayState == STATE_EXIT){
     renderOther(RENDER_NONE);
   }
-
-  delay(50); // wait for 100ms
+  delay(50); // wait for a little while
 }
 
 //////////////////////////////////////////////////////////////////////////////////
@@ -261,8 +299,8 @@ void loop () {
 
 void currentTime () {
 
-  // read the current time    
-  setSyncProvider(RTC.get);   // the function to get the time from the RTC
+  // read the current time from the RTC   
+  setSyncProvider(RTC.get);
 
   // set global variables for current time 
   nowHour24 = hour();
@@ -291,13 +329,11 @@ void currentTime () {
 
 //////////////////////////////////////////////////////////////////////////////////
 // detectTap()
-// determine if touchscreen pressure exceeds threshold
-// if no, and tap timer has not elapsed, keep tap state the same
-// if no, and tap timer has elapsed, set tap state to "none"
-// if yes, and tap timer has not elapsed, keep tap state the same
-// if yes, and tap timer is not active, this is a new tap event, so...
-//    set the tap state ("activate button") based on screen region taped
-
+// determine if the screen has been tapped in the last few milliseconds (timeout)
+// and set the tapActive flag accordingly. If we're ready for a new tap, and 
+// the pressure exceeds the tap threshold, the figure out where the screen
+// is being tapped, and set the tapZone variable, which acts like a virtual
+// button.
 
 int detectTap(){
 
@@ -322,21 +358,21 @@ int detectTap(){
   // read X,Y coordinates and pressure
   Point p = ts.getPoint();
 
-  if (p.z < ts.pressureThreshhold ){  // touchscreen isn't being taped
+  if (p.z < ts.pressureThreshhold ){   // touchscreen isn't being taped
     return lastTapZone;                // so don't change anything, and return 
   }
 
   // if we have made it this far...
   // the tap timer is not active, and the screen is being taped
-  // so this is a new tap, and we have to figure out what "button" was pushed
+  // so this is a new tap, and we have to figure out what "button" is pushed
 
   // define variables for screen regions
   int verticalRegion = 0;
   int horizontalRegion = 0;
 
   // map coordinates to pixel location
-  pixel[0] = map(p.x,75,930,0,31);           // x calibration by trial-and-error
-  pixel[1] = map(p.y,300,770,0,15);          // y calibration by trial-and-error
+  pixel[0] = map(p.x,XCAL_LEFT,XCAL_RIGHT,0,31);           // x calibration by trial-and-error
+  pixel[1] = map(p.y,YCAL_TOP,YCAL_BOTTOM,0,15);           // y calibration by trial-and-error
 
   int px = pixel[0];
   int py = pixel[1];
@@ -380,7 +416,7 @@ int detectTap(){
     tapZone = TAP_NONE;
   }
   
-  // check if tap is in the middle, as for toggling ON/OFF in alarm init screen
+  // check if tap is in the middle, for toggling ON/OFF in alarm init screen
   if (verticalRegion == 1 || verticalRegion == 2){
     if (horizontalRegion == 2) tapCenter = TAP_CENTER;
     else if (horizontalRegion == 3) tapCenter = TAP_CENTER;
@@ -391,15 +427,15 @@ int detectTap(){
   }
 
 
-  menuActive = true;
-  tapStartMillis = millis();
-  menuStartMillis = millis();
+  menuActive = true;                                      // set menuActive flag
+  tapStartMillis = millis();                              // reset tap timer
+  menuStartMillis = millis();                             // reset menu timer
   tapActive = true;                                       // tap event is active
   tapNew = true;                                          // this is a new tap
   menuTaps++;
 
-  // just in case we're going to set the time, set variables according to time
-  // that we entered the menu
+  // just in case we're going to set the time, set new time/date variables 
+  // according to the time that we entered the menu
   if ( menuTaps == 1 ){
     newHour12 = nowHour12;
     newHour24 = nowHour24;
@@ -415,7 +451,7 @@ int detectTap(){
 
 //////////////////////////////////////////////////////////////////////////////////
 // doActions()
-// actions that occur in response to tapping a virtual button on the screen
+// perform appropriate action to respond to a new tap on the screen
 // depending on current display state, and location of tap
 
 void doActions(){
@@ -425,11 +461,12 @@ void doActions(){
     return;
   }
 
+  // define some local varaibles
   int newDisplayState = displayState;
-
   int backState = 0;
   int nextState = 0;
 
+  // define the forward and backward destinations for each menu state
   if (displayState == STATE_DISP_TIME){
     backState = STATE_DISP_TIME;
     nextState = STATE_ALARM_INIT;
@@ -457,11 +494,11 @@ void doActions(){
 
   switch(displayState){
 
-    // tapping in the message area will toggle the alarm on/off
-    // tapping anywhere else changes to date display
-
   case STATE_DISP_TIME: // toggle alarm, or advance to date display
 
+    // on the main time screen, tapping the message area is a 
+    // shortcut to toggle the alarm on or off. 
+    
     if( tapZone == TAP_MESSAGE ){
       if(alarmState == true){
         alarmState = false;
@@ -472,26 +509,39 @@ void doActions(){
         newDisplayState = STATE_DISP_TIME;
       }
     }
+    
+    // if the tap is anywhere but the message area, move
+    // to the date display
 
     else{
       newDisplayState = STATE_DISP_DATE;
     }
     break;
 
+  // in date display mode, any tap will advance to the 
+  // menu screen, starting with alarm init.
+  // or, return to time by waiting for menu timeout.
+  
   case STATE_DISP_DATE: // advance to alarm init
     newDisplayState = nextState;
     break;
 
-
+  // on the alarm init screen, the alarm state can be toggled
+  // but tapping on/off. tapping the arrows moves
+  // back or forward in the menu. tapping the message area
+  // activates "alarm set" mode.
+  
   case STATE_ALARM_INIT: // state 20
 
-    // go backward in menu
+    // toggle on/off
     
     if (tapCenter == TAP_CENTER){
       if (alarmState == false) alarmState = true;
       else if (alarmState == true) alarmState = false;
       newDisplayState = STATE_ALARM_INIT;
     }
+    
+    // go backward in menu
     
     else if ( tapZone == TAP_HOURPLUS || tapZone == TAP_HOURMINUS){
       newDisplayState = backState;
@@ -502,13 +552,16 @@ void doActions(){
       newDisplayState = nextState;
     }
 
-    // move to alarm set mode
+    // otherwise, move to alarm set mode
     else{
       newDisplayState = STATE_ALARM_SET;
     }
 
     break;
 
+  // the alarm time is set by tapping the digits
+  // when complete, tapping the message area commits the new setting
+  
   case STATE_ALARM_SET: // state 201
     switch(tapZone){
 
@@ -561,14 +614,14 @@ void doActions(){
       break;
 
     case TAP_MESSAGE:
-      // code to commit alarm to RTC should go here!!
+      // code to commit alarm to RTC or EEPROM should go here!!
 
       if (alarmPM == false){
-        if (alarmHour12 == 12) alarmHour24 = 0; // 12:00am = 00.00
-        else alarmHour24 = alarmHour12;         // 1:00am-11:59am = 01.00-11.59 
+        if (alarmHour12 == 12) alarmHour24 = 0;      // 12:00am = 00.00
+        else alarmHour24 = alarmHour12;              // 1:00am-11:59am = 01.00-11.59 
       }
       else{
-        if (alarmHour12 == 12) alarmHour24 = 12; // 12:00pm = 12.00
+        if (alarmHour12 == 12) alarmHour24 = 12;     // 12:00pm = 12.00
         else alarmHour24 = alarmHour12 + 12;         // 1:00pm-11:59pm = 13.00-23.59
       }
 
@@ -584,6 +637,9 @@ void doActions(){
     }// switch(tapZone) for STATE_ALARM_SET
     break;
 
+  // time init mode works just like alarm init mode, but without the on/off toggle
+  // arrows go forward or backward. tapping message area enters time set mode.
+    
   case STATE_TIME_INIT:
 
     // go backward in menu
@@ -607,6 +663,8 @@ void doActions(){
     }
     break;
 
+  // time set mode works just like alarm set mode
+  
   case STATE_TIME_SET:
 
     switch(tapZone){
@@ -662,12 +720,12 @@ void doActions(){
     case TAP_MESSAGE:
 
       if (newPM == false){
-        if (newHour12 == 12) newHour24 = 0; // 12:00am = 00.00
-        else newHour24 = newHour12;         // 1:00am-11:59am = 01.00-11.59 
+        if (newHour12 == 12) newHour24 = 0;       // 12:00am = 00.00
+        else newHour24 = newHour12;               // 1:00am-11:59am = 01.00-11.59 
       }
       else{
-        if (newHour12 == 12) newHour24 = 12; // 12:00pm = 12.00
-        else newHour24 = newHour12 + 12;         // 1:00pm-11:59pm = 13.00-23.59
+        if (newHour12 == 12) newHour24 = 12;      // 12:00pm = 12.00
+        else newHour24 = newHour12 + 12;          // 1:00pm-11:59pm = 13.00-23.59
       }
 
       // commit to RTC
@@ -685,6 +743,9 @@ void doActions(){
     }// switch(tapZone) for STATE_TIME_SET
     break;
 
+  // date init mode works just like time init mode
+  // arrows to go forward or back in menu. message area to enter date set mode.
+  
   case STATE_DATE_INIT:
     // go backward in menu
     if (tapZone == TAP_HOURPLUS || tapZone == TAP_HOURMINUS){
@@ -702,6 +763,10 @@ void doActions(){
     }
     break;
 
+  // the year is the first screen in date set mode.
+  // tapping the digits increments or decrements the year.
+  // tapping the message area advances to set month.
+  
   case STATE_DATE_YEAR:
 
     // upper digit region: increment year
@@ -722,6 +787,10 @@ void doActions(){
     }
     break;
 
+  // the month is the second screen in date set mode.
+  // tapping the digits increments or decrements the month.
+  // tapping the message area advances to set the date.
+  
   case STATE_DATE_MONTH:
 
     // upper right digit region: increment month
@@ -749,6 +818,11 @@ void doActions(){
     }
     break;
 
+  // the date is the final screen in date set mode.
+  // tapping the digits increments or decrement the date.
+  // tapping the message area commits the new year + month + date.
+  // (wait for menu timer to elapse to exit without commiting change)
+  
   case STATE_DATE_DAY:
     // upper right digit region: increment day
     if (tapZone == TAP_MINUTEPLUS){
@@ -796,7 +870,6 @@ void doActions(){
       setTime(hour(now()), minute(now()), second(now()), newDay, newMonth, newYear);      
       RTC.set(now());
 
-
       newDisplayState = STATE_DISP_TIME;
       menuActive = false;
       menuTaps = 0;
@@ -804,6 +877,9 @@ void doActions(){
 
     break;
 
+  // the final menu screen allows for exiting to the main time screen
+  // without waiting for a timeout to occur.
+  
   case STATE_EXIT:
 
     // go backward in menu
@@ -830,8 +906,11 @@ void doActions(){
 
   } // end of switch(displayState)
 
+  // set the new displayState
+  // and clear the tap flag
+  
   displayState = newDisplayState;
-  tapNew = false; // clear new tap flag
+  tapNew = false;
 }
 
 
@@ -843,13 +922,12 @@ void setDisplay(){
 
   char buf[5];
 
-
   if (menuActive == true){    
     if ((millis() - menuStartMillis) > menuTimeout){
       menuActive = false;
       displayState = STATE_DISP_TIME;
       menuTaps = 0;
-      // exit menu triggers here, if necessary
+      // other exit menu triggers here, if necessary
     }
   }
 
@@ -1239,6 +1317,7 @@ void setDisplay(){
 void setStyle(int hour24, int minute) {
 
   // adjust the brightness based on the time of day
+  // ** override this based on photoresistor or lumen sensor reading **
   if (hour24 <= 5) ledMatrix.pwm(1); /// 12:00a to 5:59a minimum brightness
   else if (hour24 <= 6) ledMatrix.pwm(5); // 6:00a to 6:59a brighter
   else if (hour24 <= 19) ledMatrix.pwm(15); // 7:00a to 7:59p max brightness
@@ -1250,10 +1329,10 @@ void setStyle(int hour24, int minute) {
   else if (hour24 <= (GREEN_HOUR+12-1) ) digit_color = GREEN; // 7:00a to 6:59p green digits 
   else if (hour24 <= 24) digit_color = RED; // 8:00p to 11:59p red digits
 
-  // set am/pm color .. this should probably = digit_color if there is an alarm display active in message area
-  //ampm_color = digit_color;
+  // set am/pm color
   ampm_color = ORANGE;
 
+  // set the message color opposite of the digit color
   if (digit_color == GREEN) message_color = RED;
   if (digit_color == RED) message_color = GREEN;
 
@@ -1266,7 +1345,7 @@ void setStyle(int hour24, int minute) {
 
 //////////////////////////////////////////////////////////////////////////////////
 // renderTime()
-// draw the screen, using the digits and characters passed to the function
+// draw time on the screen, using the digits and characters passed to the function
 
 void renderTime(int hour12, int minute, int pm){    
 
@@ -1324,33 +1403,33 @@ void renderTime(int hour12, int minute, int pm){
   int hour24 = 0;
 
   if (pm == false){
-    if (hour12 == 12) hour24 = 0; // 12:00am = 00.00
-    else hour24 = hour12;         // 1:00am-11:59am = 01.00-11.59 
+    if (hour12 == 12) hour24 = 0;      // 12:00am = 00.00
+    else hour24 = hour12;              // 1:00am-11:59am = 01.00-11.59 
   }
   else{
-    if (hour12 == 12) hour24 = 12; // 12:00pm = 12.00
+    if (hour12 == 12) hour24 = 12;     // 12:00pm = 12.00
     else hour24 = hour12 + 12;         // 1:00pm-11:59pm = 13.00-23.59
   }
 
-  // adjust the color based on the time
-  if (hour24 <= (GREEN_HOUR-1)) digit_color = RED; // 12:00a to 6:59a red digits
+  // adjust the color based on the time 
+  if (hour24 <= (GREEN_HOUR-1)) digit_color = RED;            // 12:00a to 6:59a red digits
   else if (hour24 <= (GREEN_HOUR+12-1) ) digit_color = GREEN; // 7:00a to 6:59p green digits 
-  else if (hour24 <= 24) digit_color = RED; // 8:00p to 11:59p red digits
+  else if (hour24 <= 24) digit_color = RED;                   // 7:00p to 11:59p red digits
 
   if (digit_color == GREEN) message_color = RED;
   if (digit_color == RED) message_color = GREEN;
 
-  // fist digit of hour
+  // first digit of hour
   if (dig[1] == '1') ledMatrix.putchar(2,-2,'1',digit_color,6);
-  else ledMatrix.putchar(2,-2,'1',BLACK,6); // erase the "1" if the hour is 1-9   
+  else ledMatrix.putchar(2,-2,'1',BLACK,6);                     // erase the "1" if the hour is 1-9   
 
-  ledMatrix.putchar(9,-2,dig[2],digit_color,6); // second digit of hour
-  ledMatrix.plot(16,3,ORANGE); // hour:min colon, top
-  ledMatrix.plot(16,6,ORANGE); // hour:min colon, bottom
-  ledMatrix.putchar(18,-2,dig[3],digit_color,7); // first digit of minute
-  ledMatrix.putchar(25,-2,dig[4],digit_color,7); // second digit of minute
+  ledMatrix.putchar(9,-2,dig[2],digit_color,6);                 // second digit of hour
+  ledMatrix.plot(16,3,ORANGE);                                  // hour:min colon, top
+  ledMatrix.plot(16,6,ORANGE);                                  // hour:min colon, bottom
+  ledMatrix.putchar(18,-2,dig[3],digit_color,7);                // first digit of minute
+  ledMatrix.putchar(25,-2,dig[4],digit_color,7);                // second digit of minute
 
-  int shift = 0;
+  int shift = 0;                                                // make room for : if necessary
 
   // on main screen, adjust the color of the alarm time to red or green
   if (alarmState == true && displayState == STATE_DISP_TIME){  
@@ -1382,10 +1461,8 @@ void renderTime(int hour12, int minute, int pm){
   ledMatrix.putchar(24,11,msg[7],ampm_color,6);
   ledMatrix.putchar(28,11,msg[8],ampm_color,6);
 
-
   // send the characters to the display, and draw the screen
   ledMatrix.sendframe();
-
 }
 
 
@@ -1413,7 +1490,6 @@ void renderOther( int renderOption ){
   ledMatrix.rect(11,2,19,4,BLACK);
   ledMatrix.rect(12,3,18,3,BLACK);
   ledMatrix.rect(13,4,17,2,BLACK);
-
 
   // large digits at top of screen
   ledMatrix.putchar(2,-2,dig[1],digit_color,6); // first digit
@@ -1443,10 +1519,8 @@ void renderOther( int renderOption ){
     ledMatrix.putchar(19,1,'F',message_color);
   }
 
-
   // send the characters to the display, and draw the screen
   ledMatrix.sendframe();
-
 }
 
 
