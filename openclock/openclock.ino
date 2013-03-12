@@ -1355,9 +1355,9 @@ void renderTime(int hour12, int minute, int pm){
   // on main screen, adjust the color of the alarm time to red or green
   if (alarmState == true && displayState == STATE_DISP_TIME){  
     // adjust the color based on the time of day
-    if (alarmHour24 <= 6) message_color = RED; // 12:00a to 6:59a red digits
-    else if (alarmHour24 <= 19) message_color = GREEN; // 7:00a to 7:59p green digits 
-    else if (alarmHour24 <= 24) message_color = RED; // 8:00p to 11:59p red digits
+    if (alarmHour24 <= (GREEN_HOUR-1)) message_color = RED;              // 12:00a to 6:59a red digits
+    else if (alarmHour24 <= (GREEN_HOUR+12-1)) message_color = GREEN;    // 7:00a to 6:59p green digits 
+    else if (alarmHour24 <= 24) message_color = RED;                     // 7:00p to 11:59p red digits
     shift = 2; // shift the minutes over to make room for the : 
   }
 
