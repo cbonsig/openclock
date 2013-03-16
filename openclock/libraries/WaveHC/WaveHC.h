@@ -41,6 +41,9 @@
 #define PLAYBUFFLEN 512UL
 #endif //__AVR_ATmega168P__
 
+// OVERRIDE -- FORCE 168 VALUES
+#define PLAYBUFFLEN 256UL
+
 // Define max allowed SD read rate in bytes/sec.
 #if PLAYBUFFLEN == 512UL && OPTIMIZE_CONTIGUOUS
 /** Maximum SD read rate for 512 byte buffer and contiguous file */

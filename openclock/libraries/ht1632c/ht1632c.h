@@ -92,7 +92,7 @@ uint16_t inline pgm_read_word_near(uint16_t *ptr) { return (uint16_t)*ptr; }
 #define FONT_4x6     1
 //#define FONT_5x7     2
 //#define FONT_5x8     3
-//#define FONT_5x7W    4
+#define FONT_5x7W    4
 //#define FONT_6x10    5
 //#define FONT_6x12    6
 //#define FONT_6x13    7

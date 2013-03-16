@@ -75,26 +75,29 @@
 //               eliminate dispHour / dispMinute / etc
 //               move dot and pixel out of global . changed region, pixel to byte
 //               move touchscreen object from global to function
-//               with 1403 bytes free, #include <WaceHC.h> drops freeRam to 162
+//               with 1403 bytes free, #include <WaveHC.h> drops freeRam to 162
 //               adding any of the WaveHC objects causes complete failure 
-
-//#include <WaveHC.h>
-//#include <WaveUtil.h>
 //
-//SdReader card;    // This object holds the information for the card
-//FatVolume vol;    // This holds the information for the partition on the card
-//FatReader root;   // This holds the information for the volumes root directory
-//FatReader file;   // This object represent the WAV file for a pi digit or period
-//WaveHC wave;      // This is the only wave (audio) object, since we will only play one at a time
-//
+//               modify WaveHC.h to trick it into thinking this is aa ATMega168
+//               #include <WaveHC.h> now freeRam = 674
+//               SdReader object -> freeRam = 662
+//               FatVolume object -> freeRam = 631
+//               FarReader root object -> freeRam = 612
+//               FatReader file object -> freeRam = 593
+//               WaveHC wave object -> freeRam = 576
+//               Add helper functions -> freeRam = 576
+//               Add playcompete("1.WAV") in setup{} -> freeRam = 570 ... still no audio :(
+//                   but clock does function!
 
 #include <Time.h>         // The Arduino Time library, http://www.arduino.cc/playground/Code/Time
 #include <DS1307RTC.h>    // For optional RTC module. (This library included with the Arduino Time library)
-
 #include <Wire.h>         // Standard I2C library for Chronodot
 #include <ht1632c.h>      // http://code.google.com/p/ht1632c/
 #include <TouchScreen.h>  // https://github.com/adafruit/Touch-Screen-Library
+#include <WaveHC.h>       // https://code.google.com/p/wavehc/
+#include <WaveUtil.h>     // WaveHC.h is modified to think its running on ATmega168
 
+// LED MATRIX OBJECT
 ht1632c ledMatrix = ht1632c(&PORTD, 7, 6, 0, 1, GEOM_32x16, 2); 
 
 // TOUCHSCREEN PINS
@@ -111,6 +114,15 @@ ht1632c ledMatrix = ht1632c(&PORTD, 7, 6, 0, 1, GEOM_32x16, 2);
 #define XCAL_RIGHT  930   // X touchscreen reading corresponding to pixel column 31
 #define YCAL_TOP    300   // Y touchscreen reading corresponding to pixel row 0
 #define YCAL_BOTTOM 770   // Y touchscreen reading corresponding to pixel row 15
+
+// WAVESHIELD LIBRARIES
+// now fitting into memory, but audio isn't actually playing. why???
+SdReader card;        // This object holds the information for the card
+FatVolume vol;        // This holds the information for the partition on the card
+FatReader root;       // This holds the information for the volumes root directory
+FatReader file;       // This object represent the WAV file for a pi digit or period
+WaveHC wave;          // This is the only wave (audio) object, since we will only play one at a time
+#define error(msg) error_P(PSTR(msg)) // Define macro to put error messages in flash memory
 
 // TIMER VARIABLES
 unsigned long menuStartMillis;
@@ -207,7 +219,7 @@ byte newDay = 1;
 // set the pins, initialize the display, etc.
 
 void setup () {
-
+  
   pinMode(7, OUTPUT);         // initialize ht1632c pin
   pinMode(6, OUTPUT);         // initialize ht1632c pin
   pinMode(0, OUTPUT);         // initialize ht1632c pin
@@ -222,6 +234,11 @@ void setup () {
   // the following line sets the RTC to the date & time this sketch was compiled
   //RTC.adjust(DateTime(__DATE__, __TIME__));
   
+  playcomplete("12.WAV"); // why does this not play?
+  playcomplete("03.WAV");
+  playcomplete("AM.WAV");
+  
+  delay(100);
 }
 
 //////////////////////////////////////////////////////////////////////////////////
@@ -1154,9 +1171,6 @@ void setDisplay(){
 
   case STATE_ALARM_SET:
     // use renderTime
-    //    dispHour12 = alarmHour12;
-    //    dispMinute = alarmMinute;
-    //    dispPM = alarmPM;           
     msg[1] = 'D';
     msg[2] = 'O';
     msg[3] = 'N';
@@ -1187,9 +1201,6 @@ void setDisplay(){
 
   case STATE_TIME_SET:
     // use renderTime
-    //    dispHour12 = newHour12;
-    //    dispMinute = newMinute;
-    //    dispPM = newPM;           
     msg[1] = 'D';
     msg[2] = 'O';
     msg[3] = 'N';
@@ -1563,8 +1574,73 @@ int freeRam () {
   return (int) &v - (__brkval == 0 ? (int) &__heap_start : (int) __brkval); 
 }
 
+/////////////////////////////////// HELPERS
+/// with serial communication code removed because pins 0 and 1 are used by LED
 
-
-
-
-
+char filename[13];
+void speaknum(char c) {
+  uint8_t i=0;
+  
+  // copy flash string for 'period' to filename
+  strcpy_P(filename, PSTR("P.WAV"));
+  
+  if ('0' <= c && c <= '9') {
+    // digit - change 'P' to digit
+    filename[0] = c;
+    i = 1;
+  } 
+  else if (c != '.') {
+    // error if not period
+    return;
+  }
+  playcomplete(filename);
+}
+/*
+ * print error message and halt
+ */
+void error_P(const char *str) {
+  //PgmPrint("Error: ");
+  //SerialPrint_P(str);
+  sdErrorCheck();
+  while(1);
+}
+/*
+ * print error message and halt if SD I/O error
+ */
+void sdErrorCheck(void) {
+  if (!card.errorCode()) return;
+  //PgmPrint("\r\nSD I/O error: ");
+  //Serial.print(card.errorCode(), HEX);
+  //PgmPrint(", ");
+  //Serial.println(card.errorData(), HEX);
+  while(1);
+}
+/*
+ * Play a file and wait for it to complete
+ */
+void playcomplete(char *name) {
+  playfile(name);
+  while (wave.isplaying);
+  
+  // see if an error occurred while playing
+  sdErrorCheck();
+}
+/*
+ * Open and start playing a WAV file
+ */
+void playfile(char *name) {
+  if (wave.isplaying) {// already playing something, so stop it!
+    wave.stop(); // stop it
+  }
+  if (!file.open(root, name)) {
+    //PgmPrint("Couldn't open file ");
+    //Serial.print(name); 
+    return;
+  }
+  if (!wave.create(file)) {
+    //PgmPrintln("Not a valid WAV");
+    return;
+  }
+  // ok time to play!
+  wave.play();
+}
