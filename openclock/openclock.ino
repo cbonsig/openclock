@@ -25,7 +25,7 @@
  * +3.3V
  * GND
  
- Adafruit WaveShield (not working!)
+ Adafruit WaveShield
  * 2, 3, 4, 5 - DAC
  * 10 - SD card
  * 13, 12, 11 - SD card
@@ -88,7 +88,10 @@
 //               Add helper functions -> freeRam = 576
 //               Add playcompete("1.WAV") in setup{} -> freeRam = 570 ... still no audio :(
 //                   but clock does function!
+// 16 mar 2013 . added setup{} functions for Waveshield, and added test audio triggered upon
+//               selecting "EXIT" in menu. Audio works! FreeRam = 558, still OK
 
+// LIBRARIES
 #include <Time.h>         // The Arduino Time library, http://www.arduino.cc/playground/Code/Time
 #include <DS1307RTC.h>    // For optional RTC module. (This library included with the Arduino Time library)
 #include <Wire.h>         // Standard I2C library for Chronodot
@@ -115,13 +118,12 @@ ht1632c ledMatrix = ht1632c(&PORTD, 7, 6, 0, 1, GEOM_32x16, 2);
 #define YCAL_TOP    300   // Y touchscreen reading corresponding to pixel row 0
 #define YCAL_BOTTOM 770   // Y touchscreen reading corresponding to pixel row 15
 
-// WAVESHIELD LIBRARIES
-// now fitting into memory, but audio isn't actually playing. why???
-SdReader card;        // This object holds the information for the card
-FatVolume vol;        // This holds the information for the partition on the card
-FatReader root;       // This holds the information for the volumes root directory
-FatReader file;       // This object represent the WAV file for a pi digit or period
-WaveHC wave;          // This is the only wave (audio) object, since we will only play one at a time
+// WAVESHIELD OBJECTS
+SdReader card;            // This object holds the information for the card
+FatVolume vol;            // This holds the information for the partition on the card
+FatReader root;           // This holds the information for the volumes root directory
+FatReader file;           // This object represent the WAV file for a pi digit or period
+WaveHC wave;              // This is the only wave (audio) object, since we will only play one at a time
 #define error(msg) error_P(PSTR(msg)) // Define macro to put error messages in flash memory
 
 // TIMER VARIABLES
@@ -219,7 +221,7 @@ byte newDay = 1;
 // set the pins, initialize the display, etc.
 
 void setup () {
-  
+
   pinMode(7, OUTPUT);         // initialize ht1632c pin
   pinMode(6, OUTPUT);         // initialize ht1632c pin
   pinMode(0, OUTPUT);         // initialize ht1632c pin
@@ -233,11 +235,35 @@ void setup () {
 
   // the following line sets the RTC to the date & time this sketch was compiled
   //RTC.adjust(DateTime(__DATE__, __TIME__));
+
+  if (!card.init()) {         //play with 8 MHz spi (default faster!)  
+    error("Card init. failed!");  // Something went wrong, lets print out why
+  }
   
-  playcomplete("12.WAV"); // why does this not play?
-  playcomplete("03.WAV");
-  playcomplete("AM.WAV");
+  // enable optimize read - some cards may timeout. Disable if you're having problems
+  card.partialBlockRead(true);
+
+  // Now we will look for a FAT partition!
+  uint8_t part;
+  for (part = 0; part < 5; part++) {   // we have up to 5 slots to look in
+    if (vol.init(card, part)) 
+      break;                           // we found one, lets bail
+  }
+  if (part == 5) {                     // if we ended up not finding one  :(
+    error("No valid FAT partition!");  // Something went wrong, lets print out why
+  }
   
+  // Lets tell the user about what we found
+  //putstring("Using partition ");
+  //Serial.print(part, DEC);
+  //putstring(", type is FAT");
+  //Serial.println(vol.fatType(), DEC);     // FAT16 or FAT32?
+  
+  // Try to open the root directory
+  if (!root.openRoot(vol)) {
+    error("Can't open root dir!");      // Something went wrong,
+  }
+
   delay(100);
 }
 
@@ -357,7 +383,7 @@ int detectTap(){
 
   // initialize array to hold [x, y, prior_x, prior_y] data for tap location
   int dot[4] = {
-    0,0,0,0    }; 
+    0,0,0,0      }; 
 
   // initialize array to hold mapped coordinates for tap location
   // pixel[0,1] = [x,y] pixel ... x=0-31, y=0-15
@@ -501,6 +527,7 @@ void doActions(){
   else if (displayState == STATE_DISP_DATE){
     backState = STATE_DISP_TIME;
     nextState = STATE_ALARM_INIT;
+
   }
   else if (displayState == STATE_ALARM_INIT){
     backState = STATE_EXIT;
@@ -924,6 +951,7 @@ void doActions(){
       newDisplayState = STATE_DISP_TIME;
       menuActive = false;
       menuTaps = 0;
+      playcomplete("CLK_TOWR.WAV");
     }
     break;
 
@@ -1463,15 +1491,15 @@ void renderTime(byte hour12, byte minute, byte pm){
 
   // debug free memory
 
-//  itoa(freeRam(),buf,10);
-//  if(freeRam()<10){
+//  itoa(FreeRam(),buf,10);
+//  if(FreeRam()<10){
 //    msg[1] = buf[0];
 //  }
-//  else if(freeRam()<100){
+//  else if(FreeRam()<100){
 //    msg[1] = buf[0];
 //    msg[2] = buf[1];
 //  }
-//  else if(freeRam()<1000){
+//  else if(FreeRam()<1000){
 //    msg[1] = buf[0];
 //    msg[2] = buf[1];
 //    msg[3] = buf[2];
@@ -1482,8 +1510,6 @@ void renderTime(byte hour12, byte minute, byte pm){
 //    msg[3] = buf[2];
 //    msg[4] = buf[3];
 //  }      
-//
-
 
   // draw the characters of the message area if a message is active
   // otherwise, black out the message area
@@ -1568,22 +1594,18 @@ void renderOther( byte renderOption ){
 }
 
 
-int freeRam () {
-  extern int __heap_start, *__brkval; 
-  int v; 
-  return (int) &v - (__brkval == 0 ? (int) &__heap_start : (int) __brkval); 
-}
+/////////////////////////////////// WAVESHIELD HELPERS
 
-/////////////////////////////////// HELPERS
-/// with serial communication code removed because pins 0 and 1 are used by LED
+/// serial communication code removed 
+/// because pins 0 and 1 are used by DP14112 LED
 
 char filename[13];
 void speaknum(char c) {
   uint8_t i=0;
-  
+
   // copy flash string for 'period' to filename
   strcpy_P(filename, PSTR("P.WAV"));
-  
+
   if ('0' <= c && c <= '9') {
     // digit - change 'P' to digit
     filename[0] = c;
@@ -1621,7 +1643,7 @@ void sdErrorCheck(void) {
 void playcomplete(char *name) {
   playfile(name);
   while (wave.isplaying);
-  
+
   // see if an error occurred while playing
   sdErrorCheck();
 }
@@ -1644,3 +1666,4 @@ void playfile(char *name) {
   // ok time to play!
   wave.play();
 }
+
