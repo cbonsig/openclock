@@ -151,7 +151,12 @@ int tapZone = TAP_NONE;
 byte tapCenter = TAP_NONE;
 boolean tapNew = false;
 
-boolean alarmState = false;
+// define alarm states
+#define ALARM_OFF      0
+#define ALARM_SET      1
+#define ALARM_ACTIVE   2
+#define ALARM_SNOOZE   3
+byte alarmState = ALARM_OFF;
 
 // define display states
 #define STATE_DISP_TIME  0
@@ -236,7 +241,7 @@ void setup () {
   // the following line sets the RTC to the date & time this sketch was compiled
   //RTC.adjust(DateTime(__DATE__, __TIME__));
 
-  if (!card.init()) {         //play with 8 MHz spi (default faster!)  
+  if (!card.init()) {             //play with 8 MHz spi (default faster!)  
     error("Card init. failed!");  // Something went wrong, lets print out why
   }
   
@@ -253,12 +258,6 @@ void setup () {
     error("No valid FAT partition!");  // Something went wrong, lets print out why
   }
   
-  // Lets tell the user about what we found
-  //putstring("Using partition ");
-  //Serial.print(part, DEC);
-  //putstring(", type is FAT");
-  //Serial.println(vol.fatType(), DEC);     // FAT16 or FAT32?
-  
   // Try to open the root directory
   if (!root.openRoot(vol)) {
     error("Can't open root dir!");      // Something went wrong,
@@ -273,27 +272,28 @@ void setup () {
 
 void loop () {
 
-  currentTime();                        // read current time and set global
-  // variables for hour, minute, am/pm    
+  // read current time and set global variables for hour, minute, am/pm
+  currentTime();                        
 
-  detectTap();                          // detect tap state
+  // detect tap state
+  detectTap();                          
 
-  doActions();                          // act upon new tap and set new 
-  // display state
+  // act upon new tap and set new display state
+  doActions();                           
 
-  setDisplay();                         // change display state according to 
-  // current menu mode    
+  // change display state according to current menu mode
+  setDisplay();                         
 
-  setStyle(nowHour24, nowMinute);     // set color and brightness based
-  // on current time 
+  // set color and brightness based on current time
+  setStyle(nowHour24, nowMinute);     
 
-    // set main screen rendering flag based on alarm state
+  // set main screen rendering flag based on alarm state
 
-    int renderOpt = RENDER_NONE;
-  if ( alarmState == true) renderOpt = RENDER_ON;
-  else if (alarmState == false) renderOpt = RENDER_OFF;
+  int renderOpt = RENDER_NONE;
+  if ( alarmState >= ALARM_SET) renderOpt = RENDER_ON;
+  else if (alarmState == ALARM_OFF ) renderOpt = RENDER_OFF;
 
-  // call the relevant creen rendering function
+  // call the relevant screen rendering function
   // based on the current display state
 
   if (displayState == STATE_DISP_TIME){
@@ -329,7 +329,11 @@ void loop () {
   else if (displayState == STATE_EXIT){
     renderOther(RENDER_NONE);
   }
-  delay(50); // wait for a little while
+  
+  // check on the alarm
+  
+  // wait for a little while
+  delay(50);
 }
 
 //////////////////////////////////////////////////////////////////////////////////
@@ -554,12 +558,12 @@ void doActions(){
     // shortcut to toggle the alarm on or off. 
 
     if( tapZone == TAP_MESSAGE ){
-      if(alarmState == true){
-        alarmState = false;
+      if(alarmState >= ALARM_SET ){
+        alarmState = ALARM_OFF;
         newDisplayState = STATE_DISP_TIME;
       }
-      else if(alarmState == false){
-        alarmState = true;
+      else if(alarmState == ALARM_OFF){
+        alarmState = ALARM_SET;
         newDisplayState = STATE_DISP_TIME;
       }
     }
@@ -590,8 +594,8 @@ void doActions(){
     // toggle on/off
 
     if (tapCenter == TAP_CENTER){
-      if (alarmState == false) alarmState = true;
-      else if (alarmState == true) alarmState = false;
+      if (alarmState == ALARM_OFF) alarmState = ALARM_SET;
+      else if (alarmState >= ALARM_SET) alarmState = ALARM_OFF;
       newDisplayState = STATE_ALARM_INIT;
     }
 
@@ -679,7 +683,7 @@ void doActions(){
         else alarmHour24 = alarmHour12 + 12;         // 1:00pm-11:59pm = 13.00-23.59
       }
 
-      alarmState = true;
+      alarmState = ALARM_SET;
       menuActive = false;
       menuTaps = 0;
       newDisplayState = STATE_DISP_TIME;
@@ -995,7 +999,7 @@ void setDisplay(){
     //    dispMinute = nowMinute;
     //    dispPM = nowPM;    
 
-    if(alarmState == true){ // display alarm time in message area if alarm is on
+    if(alarmState >= ALARM_SET){ // display alarm time in message area if alarm is on
 
       // set the hours digits
       itoa(alarmHour12, buf, 10);
@@ -1032,7 +1036,7 @@ void setDisplay(){
       msg[6] = ' ';
     }
 
-    else if(alarmState == false){
+    else if(alarmState == ALARM_OFF){
       msg[1] = ' ';
       msg[2] = ' ';
       msg[3] = ' ';
@@ -1481,7 +1485,7 @@ void renderTime(byte hour12, byte minute, byte pm){
   byte shift = 0;                                                // make room for : if necessary
 
   // on main screen, adjust the color of the alarm time to red or green
-  if (alarmState == true && displayState == STATE_DISP_TIME){  
+  if (alarmState >= ALARM_SET && displayState == STATE_DISP_TIME){  
     // adjust the color based on the time of day
     if (alarmHour24 <= (GREEN_HOUR-1)) message_color = RED;              // 12:00a to 6:59a red digits
     else if (alarmHour24 <= (GREEN_HOUR+12-1)) message_color = GREEN;    // 7:00a to 6:59p green digits 
@@ -1521,7 +1525,7 @@ void renderTime(byte hour12, byte minute, byte pm){
   if (msg[5] != '\0') ledMatrix.putchar(16+shift,11,msg[5],message_color);
   if (msg[6] != '\0') ledMatrix.putchar(20+shift,11,msg[6],message_color);
 
-  if (alarmState == true && displayState == STATE_DISP_TIME){  
+  if (alarmState >= ALARM_SET && displayState == STATE_DISP_TIME){  
     ledMatrix.plot(8,12,ORANGE); // dot for alarm
     ledMatrix.plot(8,14,ORANGE); // dot for alarm
   }
