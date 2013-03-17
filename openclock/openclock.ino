@@ -332,6 +332,8 @@ void loop () {
   
   // check on the alarm
   
+  if (alarmState >= ALARM_SET) checkAlarm();
+  
   // wait for a little while
   delay(50);
 }
@@ -378,7 +380,6 @@ void currentTime () {
 // button.
 
 int detectTap(){
-
 
   // TOUCHSCREEN FUNCTION
   // Final parameter (90) is the resistance between X+ and X- in ohms
@@ -955,7 +956,6 @@ void doActions(){
       newDisplayState = STATE_DISP_TIME;
       menuActive = false;
       menuTaps = 0;
-      playcomplete("CLK_TOWR.WAV");
     }
     break;
 
@@ -1597,6 +1597,31 @@ void renderOther( byte renderOption ){
   ledMatrix.sendframe();
 }
 
+//////////////////////////////////////////////////////////////////////////////////
+// checkAlarm()
+// sound the alarm if the time is right
+// for now, alarm sound will play only once, then the alarm will be turned off.
+// during play the clock will freeze
+// future: improve this with interrupt logic, add snooze, add devious math test
+// to disable alarm -- prove user is really awake...
+
+void checkAlarm () {
+
+  if (alarmState == ALARM_OFF) return;
+  
+  else if (alarmState == ALARM_SET){
+    
+    if (nowHour24 == alarmHour24 && nowMinute == alarmMinute){
+      alarmState = ALARM_ACTIVE;
+    }
+  }
+  
+  else if (alarmState == ALARM_ACTIVE){    
+    playcomplete("CLK_TOWR.WAV");
+    alarmState = ALARM_OFF;
+  }
+}
+    
 
 /////////////////////////////////// WAVESHIELD HELPERS
 
