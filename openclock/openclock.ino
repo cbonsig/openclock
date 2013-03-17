@@ -1604,6 +1604,8 @@ void renderOther( byte renderOption ){
 // during play the clock will freeze
 // future: improve this with interrupt logic, add snooze, add devious math test
 // to disable alarm -- prove user is really awake...
+//
+// http://adafruit.com/forums/viewtopic.php?f=31&t=34764&start=0#p171754
 
 void checkAlarm () {
 
