@@ -1265,13 +1265,12 @@ void setDisplay(){
   case STATE_DATE_YEAR:
     // use renderOther
 
-    dig[1] = '2';
-    dig[2] = '0';
-
     // set the year digits
-    itoa(newYear-2000, buf, 10);
-    dig[3] = buf[0];
-    dig[4] = buf[1];
+    itoa(newYear, buf, 10);
+    dig[1] = buf[0];
+    dig[2] = buf[1];
+    dig[3] = buf[2];
+    dig[4] = buf[3];
 
     msg[1] = 'Y';
     msg[2] = 'E';
