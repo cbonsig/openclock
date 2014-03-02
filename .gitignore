@@ -1,7 +1,7 @@
-.DS_Store
-.AppleDouble
-.LSOverride
-Icon
+.DS_Store*
+.AppleDouble*
+.LSOverride*
+Icon*
 
 
 # Thumbnails
