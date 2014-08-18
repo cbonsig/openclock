@@ -193,6 +193,4 @@ Wire Wire Line
 	3050 2700 2750 2700
 Wire Wire Line
 	3050 2900 2750 2900
-Text Notes 2550 3250 2    60   ~ 0
-Arduino UNO Headers
 $EndSCHEMATC
