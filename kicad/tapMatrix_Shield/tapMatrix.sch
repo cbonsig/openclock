@@ -29,6 +29,7 @@ LIBS:opto
 LIBS:atmel
 LIBS:contrib
 LIBS:valves
+LIBS:tapMatrix
 LIBS:tapMatrix-cache
 EELAYER 24 0
 EELAYER END
@@ -45,10 +46,10 @@ Comment3 ""
 Comment4 ""
 $EndDescr
 $Comp
-L CONN_6 U?
+L CONN_6 P?
 U 1 1 53F232C2
 P 1850 1450
-F 0 "U?" V 1800 1450 60  0000 C CNN
+F 0 "P?" V 1800 1450 60  0000 C CNN
 F 1 "90120-0766" V 1900 1450 60  0000 C CNN
 F 2 "" H 1850 1450 60  0000 C CNN
 F 3 "" H 1850 1450 60  0000 C CNN
@@ -84,10 +85,10 @@ Wire Wire Line
 	1500 1600 900  1600
 Connection ~ 900  1600
 $Comp
-L CONN_6 U?
+L CONN_6 P?
 U 1 1 53F2345E
 P 1850 2450
-F 0 "U?" V 1800 2450 60  0000 C CNN
+F 0 "P?" V 1800 2450 60  0000 C CNN
 F 1 "90120-0766" V 1900 2450 60  0000 C CNN
 F 2 "" H 1850 2450 60  0000 C CNN
 F 3 "" H 1850 2450 60  0000 C CNN
@@ -95,17 +96,17 @@ F 3 "" H 1850 2450 60  0000 C CNN
 	1    0    0    -1  
 $EndComp
 Text GLabel 1500 2200 0    60   Input ~ 0
-A1
+A0
 Text GLabel 1250 2300 0    60   Input ~ 0
-A2
+A1
 Text GLabel 1500 2400 0    60   Input ~ 0
-A3
+A2
 Text GLabel 1250 2500 0    60   Input ~ 0
-A4
+A3
 Text GLabel 1500 2600 0    60   Input ~ 0
-A5
+A4
 Text GLabel 1250 2700 0    60   Input ~ 0
-A6
+A5
 Wire Wire Line
 	1500 2300 1250 2300
 Wire Wire Line
@@ -195,4 +196,27 @@ Wire Wire Line
 	3050 2900 2750 2900
 Text Notes 2550 3250 2    60   ~ 0
 Arduino UNO Headers
+$Comp
+L TS_ZIF P?
+U 1 1 53F23B9F
+P 4500 1350
+F 0 "P?" V 4450 1350 50  0000 C CNN
+F 1 "TS_ZIF" V 4550 1350 50  0000 C CNN
+F 2 "" H 4500 1350 60  0000 C CNN
+F 3 "" H 4500 1350 60  0000 C CNN
+	1    4500 1350
+	1    0    0    -1  
+$EndComp
+Text GLabel 4150 1200 0    60   Input ~ 0
+A0
+Text GLabel 3900 1300 0    60   Input ~ 0
+A1
+Text GLabel 4150 1400 0    60   Input ~ 0
+A2
+Text GLabel 3900 1500 0    60   Input ~ 0
+A3
+Wire Wire Line
+	3900 1500 4150 1500
+Wire Wire Line
+	3900 1300 4150 1300
 $EndSCHEMATC
