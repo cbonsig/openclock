@@ -1,0 +1,12 @@
+EESchema-DOCLIB  Version 2.0
+#
+$CMP LED_MATRIX_HDR
+D 8x2 Header for LED Matrix DE-DP14112
+K CONN
+$ENDCMP
+#
+$CMP SD_CARD
+D SD Card Memory Card Connector
+$ENDCMP
+#
+#End Doc Library

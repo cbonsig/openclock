@@ -199,24 +199,176 @@ Arduino UNO Headers
 $Comp
 L TS_ZIF P?
 U 1 1 53F23B9F
-P 4500 1350
-F 0 "P?" V 4450 1350 50  0000 C CNN
-F 1 "TS_ZIF" V 4550 1350 50  0000 C CNN
-F 2 "" H 4500 1350 60  0000 C CNN
-F 3 "" H 4500 1350 60  0000 C CNN
-	1    4500 1350
+P 5300 2550
+F 0 "P?" H 5350 2850 50  0000 C CNN
+F 1 "TS_ZIF" V 5500 2550 50  0000 C CNN
+F 2 "" H 5300 2550 60  0000 C CNN
+F 3 "" H 5300 2550 60  0000 C CNN
+	1    5300 2550
 	1    0    0    -1  
 $EndComp
-Text GLabel 4150 1200 0    60   Input ~ 0
+Text GLabel 4950 2400 0    60   Input ~ 0
 A0
-Text GLabel 3900 1300 0    60   Input ~ 0
+Text GLabel 4700 2500 0    60   Input ~ 0
 A1
-Text GLabel 4150 1400 0    60   Input ~ 0
+Text GLabel 4950 2600 0    60   Input ~ 0
 A2
-Text GLabel 3900 1500 0    60   Input ~ 0
+Text GLabel 4700 2700 0    60   Input ~ 0
 A3
 Wire Wire Line
-	3900 1500 4150 1500
+	4700 2700 4950 2700
 Wire Wire Line
-	3900 1300 4150 1300
+	4700 2500 4950 2500
+$Comp
+L LED_MATRIX_HDR P?
+U 1 1 53F2DDF1
+P 7650 2100
+F 0 "P?" H 7650 2850 60  0000 C CNN
+F 1 "LED_MATRIX_HDR" H 7650 1400 50  0000 C CNN
+F 2 "" H 7650 2100 60  0000 C CNN
+F 3 "" H 7650 2100 60  0000 C CNN
+	1    7650 2100
+	1    0    0    -1  
+$EndComp
+Text GLabel 7000 1550 0    60   Input ~ 0
+D0
+NoConn ~ 7000 1700
+NoConn ~ 7000 1850
+NoConn ~ 7000 2150
+NoConn ~ 8250 2150
+NoConn ~ 8250 1700
+$Comp
+L GND #PWR?
+U 1 1 53F2DE59
+P 6750 2150
+F 0 "#PWR?" H 6750 2150 30  0001 C CNN
+F 1 "GND" H 6750 2080 30  0001 C CNN
+F 2 "" H 6750 2150 60  0000 C CNN
+F 3 "" H 6750 2150 60  0000 C CNN
+	1    6750 2150
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	-69150 -60200 -69350 -60200
+Wire Wire Line
+	-69350 -60200 -69350 -60100
+Wire Wire Line
+	-69150 -60000 -69150 -59800
+Connection ~ -69150 -59900
+Text GLabel 7000 2450 0    60   Input ~ 0
+5V
+Text GLabel 8550 1550 2    60   Input ~ 0
+D1
+Text GLabel 8250 2000 2    60   Input ~ 0
+D6
+Text GLabel 8550 1850 2    60   Input ~ 0
+D7
+Wire Wire Line
+	-68100 -60200 -68350 -60200
+Wire Wire Line
+	-68100 -60500 -68350 -60500
+Wire Wire Line
+	-68350 -60000 -68350 -59800
+Connection ~ -68350 -59900
+$Comp
+L GND #PWR?
+U 1 1 53F2E04E
+P 8650 2600
+F 0 "#PWR?" H 8650 2600 30  0001 C CNN
+F 1 "GND" H 8650 2530 30  0001 C CNN
+F 2 "" H 8650 2600 60  0000 C CNN
+F 3 "" H 8650 2600 60  0000 C CNN
+	1    8650 2600
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	-68000 -59850 -68000 -59900
+Wire Wire Line
+	-68000 -59900 -68350 -59900
+Text Notes 5500 3250 2    60   ~ 0
+Touchscreen ZIF Socket
+Text Notes 8000 3250 2    60   ~ 0
+LED Matrix Header
+$Comp
+L SD_CARD U?
+U 1 1 53F2E748
+P 10650 2050
+F 0 "U?" H 10700 2750 60  0000 C CNN
+F 1 "SD_CARD" H 10650 1350 60  0000 C CNN
+F 2 "" H 10650 2250 60  0000 C CNN
+F 3 "" H 10650 2250 60  0000 C CNN
+	1    10650 2050
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	7000 2000 6750 2000
+Wire Wire Line
+	6750 2000 6750 2150
+Wire Wire Line
+	7000 2300 7000 2600
+Connection ~ 7000 2450
+Wire Wire Line
+	8550 1850 8250 1850
+Wire Wire Line
+	8550 1550 8250 1550
+Wire Wire Line
+	8250 2300 8250 2600
+Connection ~ 8250 2450
+Wire Wire Line
+	8250 2450 8650 2450
+Wire Wire Line
+	8650 2450 8650 2600
+Text Notes 11050 3250 2    60   ~ 0
+MicroSD Card Socket
+NoConn ~ 9950 1550
+Text GLabel 9950 1750 0    60   Input ~ 0
+CS
+Text GLabel 9950 1950 0    60   Input ~ 0
+MOSI
+Text GLabel 9950 2150 0    60   Input ~ 0
+3.3V
+Text GLabel 11350 1550 2    60   Input ~ 0
+SCLK
+$Comp
+L GND #PWR?
+U 1 1 53F3050A
+P 11800 2650
+F 0 "#PWR?" H 11800 2650 30  0001 C CNN
+F 1 "GND" H 11800 2580 30  0001 C CNN
+F 2 "" H 11800 2650 60  0000 C CNN
+F 3 "" H 11800 2650 60  0000 C CNN
+	1    11800 2650
+	1    0    0    -1  
+$EndComp
+Text GLabel 11350 1950 2    60   Input ~ 0
+D12
+NoConn ~ 11350 2150
+Wire Wire Line
+	11350 1750 11800 1750
+Wire Wire Line
+	11800 1750 11800 2650
+Wire Wire Line
+	11350 2350 11800 2350
+Connection ~ 11800 2350
+Wire Wire Line
+	11350 2550 11800 2550
+Connection ~ 11800 2550
+$Comp
+L GND #PWR?
+U 1 1 53F30748
+P 9800 2650
+F 0 "#PWR?" H 9800 2650 30  0001 C CNN
+F 1 "GND" H 9800 2580 30  0001 C CNN
+F 2 "" H 9800 2650 60  0000 C CNN
+F 3 "" H 9800 2650 60  0000 C CNN
+	1    9800 2650
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	9950 2350 9800 2350
+Wire Wire Line
+	9800 2350 9800 2650
+Wire Wire Line
+	9950 2550 9800 2550
+Connection ~ 9800 2550
 $EndSCHEMATC
