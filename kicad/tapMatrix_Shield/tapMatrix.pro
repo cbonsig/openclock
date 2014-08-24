@@ -1,4 +1,4 @@
-update=Fri 22 Aug 2014 09:48:20 PM PDT
+update=Sat 23 Aug 2014 11:04:38 PM PDT
 version=1
 last_client=kicad
 [cvpcb]
@@ -25,8 +25,6 @@ SolderMaskMinWidth=0.000000000000
 DrawSegmentWidth=0.200000000000
 BoardOutlineThickness=0.100000000000
 ModuleOutlineThickness=0.150000000000
-[general]
-version=1
 [eeschema]
 version=1
 PageLayoutDescrFile=
@@ -72,3 +70,5 @@ LibName28=atmel
 LibName29=contrib
 LibName30=valves
 LibName31=tapMatrix
+[general]
+version=1
