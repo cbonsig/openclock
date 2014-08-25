@@ -1,10 +1,10 @@
-Cmp-Mod V01 Created by Cvpcb (2014-08-05 BZR 5054)-product   date = Sat 23 Aug 2014 01:03:36 PM PDT
+Cmp-Mod V01 Created by Cvpcb (2014-08-05 BZR 5054)-product   date = Sun 24 Aug 2014 05:58:08 PM PDT
 
 BeginCmp
 TimeStamp = /53F7C57F;
 Reference = BT1;
 ValeurCmp = BATTERY;
-IdModule  = ;
+IdModule  = tapmatrix:CR2032;
 EndCmp
 
 BeginCmp
@@ -109,14 +109,14 @@ BeginCmp
 TimeStamp = /53F23B9F;
 Reference = P5;
 ValeurCmp = TS_ZIF;
-IdModule  = ;
+IdModule  = tapmatrix:SFW4R­5STE1LF;
 EndCmp
 
 BeginCmp
 TimeStamp = /53F2DDF1;
 Reference = P6;
 ValeurCmp = LED_MATRIX_HDR;
-IdModule  = ;
+IdModule  = tapmatrix:5103310­-3;
 EndCmp
 
 BeginCmp
