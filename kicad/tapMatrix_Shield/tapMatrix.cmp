@@ -1,4 +1,4 @@
-Cmp-Mod V01 Created by Cvpcb (2014-08-05 BZR 5054)-product   date = Sun 24 Aug 2014 05:58:08 PM PDT
+Cmp-Mod V01 Created by Cvpcb (2014-08-05 BZR 5054)-product   date = Mon 25 Aug 2014 09:50:24 PM PDT
 
 BeginCmp
 TimeStamp = /53F7C57F;
@@ -200,7 +200,7 @@ BeginCmp
 TimeStamp = /53F2E748;
 Reference = U5;
 ValeurCmp = SD_CARD;
-IdModule  = ;
+IdModule  = tapmatrix:114-00841-68;
 EndCmp
 
 EndListe
