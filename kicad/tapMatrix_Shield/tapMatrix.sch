@@ -325,7 +325,7 @@ $EndComp
 Text Label 3600 1350 0    60   ~ 0
 MISO
 Text Label 10650 2600 0    60   ~ 0
-MISO
+DATA_IN
 Text Label 9400 2600 0    60   ~ 0
 MOSI
 Text Label 3600 1450 0    60   ~ 0
@@ -361,7 +361,7 @@ CS
 Text Label 13650 1700 0    60   ~ 0
 CS
 Text Label 13650 1900 0    60   ~ 0
-MOSI
+DATA_IN
 Text Label 3550 1550 0    60   ~ 0
 SD_CS
 Text Label 11150 1650 0    60   ~ 0
