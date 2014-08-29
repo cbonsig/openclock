@@ -95,7 +95,7 @@
 #include <Time.h>         // The Arduino Time library, http://www.arduino.cc/playground/Code/Time
 #include <DS1307RTC.h>    // For optional RTC module. (This library included with the Arduino Time library)
 #include <Wire.h>         // Standard I2C library for Chronodot
-#include <ht1632c.h>      // http://code.google.com/p/ht1632c/
+#include "ht1632c.h"      // http://code.google.com/p/ht1632c/
 #include <TouchScreen.h>  // https://github.com/adafruit/Touch-Screen-Library
 #include <WaveHC.h>       // https://code.google.com/p/wavehc/
 #include <WaveUtil.h>     // WaveHC.h is modified to think its running on ATmega168
