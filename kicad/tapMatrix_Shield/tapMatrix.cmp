@@ -1,4 +1,4 @@
-Cmp-Mod V01 Created by Cvpcb (2014-08-05 BZR 5054)-product   date = Mon 25 Aug 2014 09:50:24 PM PDT
+Cmp-Mod V01 Created by Cvpcb (2014-08-05 BZR 5054)-product   date = Mon 01 Sep 2014 09:16:51 PM PDT
 
 BeginCmp
 TimeStamp = /53F7C57F;
@@ -32,7 +32,7 @@ BeginCmp
 TimeStamp = /53F6F42A;
 Reference = C4;
 ValeurCmp = 100uF/6V;
-IdModule  = Capacitors_SMD:c_0603;
+IdModule  = Capacitors_Tantalum_SMD:TantalC_SizeC_EIA-6032_Reflow;
 EndCmp
 
 BeginCmp
@@ -46,7 +46,7 @@ BeginCmp
 TimeStamp = /53F6EFF0;
 Reference = C6;
 ValeurCmp = 100uF/6V;
-IdModule  = Capacitors_SMD:c_0603;
+IdModule  = Capacitors_Tantalum_SMD:TantalC_SizeC_EIA-6032_Reflow;
 EndCmp
 
 BeginCmp
@@ -67,7 +67,7 @@ BeginCmp
 TimeStamp = /53F6E1A7;
 Reference = C9;
 ValeurCmp = 100uF/6V;
-IdModule  = Capacitors_SMD:c_0603;
+IdModule  = Capacitors_Tantalum_SMD:TantalC_SizeC_EIA-6032_Reflow;
 EndCmp
 
 BeginCmp
@@ -159,13 +159,6 @@ TimeStamp = /53F3A864;
 Reference = R5;
 ValeurCmp = 10K;
 IdModule  = Resistors_SMD:R_0603;
-EndCmp
-
-BeginCmp
-TimeStamp = /53F6D006;
-Reference = RV1;
-ValeurCmp = POT;
-IdModule  = ;
 EndCmp
 
 BeginCmp
