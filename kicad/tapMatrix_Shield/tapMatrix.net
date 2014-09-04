@@ -1,7 +1,7 @@
 (export (version D)
   (design
     (source /home/cbonsignore/github/openclock/kicad/tapMatrix_Shield/tapMatrix.sch)
-    (date "Wed 03 Sep 2014 08:40:27 PM PDT")
+    (date "Wed 03 Sep 2014 09:53:08 PM PDT")
     (tool "Eeschema (2014-08-05 BZR 5054)-product"))
   (components
     (comp (ref P5)
@@ -108,8 +108,8 @@
       (sheetpath (names /) (tstamps /))
       (tstamp 53F6E48F))
     (comp (ref U1)
-      (value APE8865N-33-HF-3)
-      (footprint SMD_Packages:SOT-23)
+      (value MCP1700T-3302E/MB)
+      (footprint Housings_SOT-89:SOT89-3_Housing)
       (libsource (lib regul) (part APE8865N-33-HF-3))
       (sheetpath (names /) (tstamps /))
       (tstamp 53F6EC9F))

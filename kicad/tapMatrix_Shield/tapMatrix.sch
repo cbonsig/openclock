@@ -37,8 +37,8 @@ $Descr B 17000 11000
 encoding utf-8
 Sheet 1 1
 Title "tapMatrix Shield"
-Date "17 Aug 2014"
-Rev "0.1"
+Date "03 Sep 2014"
+Rev "0.2"
 Comp "Responsive Devices, Inc."
 Comment1 ""
 Comment2 ""
@@ -565,8 +565,8 @@ L APE8865N-33-HF-3 U1
 U 1 1 53F6EC9F
 P 4200 4850
 F 0 "U1" H 3900 5100 40  0000 C CNN
-F 1 "APE8865N-33-HF-3" H 4200 5050 40  0000 C CNN
-F 2 "SMD_Packages:SOT-23" H 4200 4950 35  0000 C CIN
+F 1 "MCP1700T-3302E/MB" H 4200 5050 40  0000 C CNN
+F 2 "Housings_SOT-89:SOT89-3_Housing" H 4200 5200 35  0001 C CIN
 F 3 "" H 4200 4850 60  0000 C CNN
 	1    4200 4850
 	1    0    0    -1  
