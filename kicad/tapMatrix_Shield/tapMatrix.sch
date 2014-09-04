@@ -50,12 +50,12 @@ Arduino UNO Headers
 $Comp
 L TS_ZIF P5
 U 1 1 53F23B9F
-P 5300 2550
-F 0 "P5" H 5350 2850 50  0000 C CNN
-F 1 "TS_ZIF" V 5500 2550 50  0000 C CNN
-F 2 "tapmatrix:SFW4R­5STE1LF" H 5300 2550 60  0001 C CNN
-F 3 "" H 5300 2550 60  0000 C CNN
-	1    5300 2550
+P 5000 2550
+F 0 "P5" H 5050 2850 50  0000 C CNN
+F 1 "TS_ZIF" V 5200 2550 50  0000 C CNN
+F 2 "tapmatrix:SFW4R­5STE1LF" H 5000 2550 60  0001 C CNN
+F 3 "" H 5000 2550 60  0000 C CNN
+	1    5000 2550
 	1    0    0    -1  
 $EndComp
 $Comp
@@ -96,8 +96,8 @@ F 3 "" H 8650 2600 60  0000 C CNN
 	1    8650 2600
 	1    0    0    -1  
 $EndComp
-Text Notes 5500 3250 2    60   ~ 0
-Touchscreen ZIF Socket
+Text Notes 6500 3250 2    60   ~ 0
+Touchscreen ZIF Socket + Optional Header
 Text Notes 8000 3250 2    60   ~ 0
 LED Matrix Header
 $Comp
@@ -338,13 +338,13 @@ Text Label 1350 2400 0    60   ~ 0
 XP
 Text Label 1350 2500 0    60   ~ 0
 YM
-Text Label 4700 2400 0    60   ~ 0
+Text Label 4400 2400 0    60   ~ 0
 XM
-Text Label 4700 2500 0    60   ~ 0
+Text Label 4400 2500 0    60   ~ 0
 YP
-Text Label 4700 2600 0    60   ~ 0
+Text Label 4400 2600 0    60   ~ 0
 XP
-Text Label 4700 2700 0    60   ~ 0
+Text Label 4400 2700 0    60   ~ 0
 YM
 Text Label 15400 1900 0    60   ~ 0
 MISO
@@ -533,16 +533,16 @@ U 1 1 53F6E1A7
 P 15100 5000
 F 0 "C9" H 15100 5100 40  0000 L CNN
 F 1 "100uF/6V" H 15106 4915 40  0000 L CNN
-F 2 "Capacitors_SMD:c_0603" H 15138 4850 30  0001 C CNN
+F 2 "Capacitors_Tantalum_SMD:TantalC_SizeC_EIA-6032_Reflow" H 15138 4850 30  0001 C CNN
 F 3 "" H 15100 5000 60  0000 C CNN
 	1    15100 5000
 	0    -1   -1   0   
 $EndComp
 $Comp
-L CONN_2 P7
+L CONN_2 JP6
 U 1 1 53F6E48F
 P 15550 5500
-F 0 "P7" V 15500 5500 40  0000 C CNN
+F 0 "JP6" V 15500 5500 40  0000 C CNN
 F 1 "SPKR" V 15600 5500 40  0000 C CNN
 F 2 "Pin_Headers:Pin_Header_Straight_1x02" H 15550 5500 60  0001 C CNN
 F 3 "" H 15550 5500 60  0000 C CNN
@@ -588,7 +588,7 @@ U 1 1 53F6EFF0
 P 5400 5000
 F 0 "C6" H 5400 5100 40  0000 L CNN
 F 1 "100uF/6V" H 5406 4915 40  0000 L CNN
-F 2 "Capacitors_SMD:c_0603" H 5438 4850 30  0001 C CNN
+F 2 "Capacitors_Tantalum_SMD:TantalC_SizeC_EIA-6032_Reflow" H 5438 4850 30  0001 C CNN
 F 3 "" H 5400 5000 60  0000 C CNN
 	1    5400 5000
 	1    0    0    -1  
@@ -654,7 +654,7 @@ U 1 1 53F6F42A
 P 3100 5000
 F 0 "C4" H 3100 5100 40  0000 L CNN
 F 1 "100uF/6V" H 3106 4915 40  0000 L CNN
-F 2 "Capacitors_SMD:c_0603" H 3138 4850 30  0001 C CNN
+F 2 "Capacitors_Tantalum_SMD:TantalC_SizeC_EIA-6032_Reflow" H 3138 4850 30  0001 C CNN
 F 3 "" H 3100 5000 60  0000 C CNN
 	1    3100 5000
 	1    0    0    -1  
@@ -724,9 +724,9 @@ F 3 "" H 3650 7650 60  0000 C CNN
 	1    0    0    -1  
 $EndComp
 Wire Wire Line
-	4700 2700 4950 2700
+	4400 2700 4650 2700
 Wire Wire Line
-	4700 2500 4950 2500
+	4400 2500 4650 2500
 Wire Wire Line
 	-766900 -630300 -767100 -630300
 Wire Wire Line
@@ -817,9 +817,9 @@ Wire Wire Line
 Wire Wire Line
 	1650 2400 1350 2400
 Wire Wire Line
-	4950 2400 4700 2400
+	4650 2400 4400 2400
 Wire Wire Line
-	4950 2600 4700 2600
+	4650 2600 4400 2600
 Wire Wire Line
 	14000 1900 13650 1900
 Wire Wire Line
@@ -1222,4 +1222,31 @@ Wire Wire Line
 Connection ~ 10600 4650
 Wire Wire Line
 	11100 4650 11100 4900
+$Comp
+L 4_PIN_1 JP5
+U 1 1 5407DC2F
+P 6250 2550
+F 0 "JP5" H 6250 2850 60  0000 C CNN
+F 1 "4_PIN_1" V 6350 2550 60  0000 C CNN
+F 2 "Pin_Headers:Pin_Header_Straight_1x04" H 6250 2550 60  0001 C CNN
+F 3 "" H 6250 2550 60  0000 C CNN
+	1    6250 2550
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	5800 2400 5500 2400
+Wire Wire Line
+	5800 2500 5500 2500
+Wire Wire Line
+	5800 2600 5500 2600
+Wire Wire Line
+	5800 2700 5500 2700
+Text Label 5500 2400 0    60   ~ 0
+XM
+Text Label 5500 2500 0    60   ~ 0
+YP
+Text Label 5500 2600 0    60   ~ 0
+XP
+Text Label 5500 2700 0    60   ~ 0
+YM
 $EndSCHEMATC
