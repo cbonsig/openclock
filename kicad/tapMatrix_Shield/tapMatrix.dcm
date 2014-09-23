@@ -25,6 +25,10 @@ D 8x2 Header for LED Matrix DE-DP14112
 K CONN
 $ENDCMP
 #
+$CMP MCP1700T-3302E/MB
+D SOT-89-3 3.3V LDO Regulator
+$ENDCMP
+#
 $CMP SD_CARD
 D SD Card Memory Card Connector
 $ENDCMP
