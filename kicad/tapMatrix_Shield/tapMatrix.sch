@@ -37,7 +37,7 @@ $Descr B 17000 11000
 encoding utf-8
 Sheet 1 1
 Title "tapMatrix Shield"
-Date "22 Sep 2014"
+Date "26 Oct 2014"
 Rev "0.3"
 Comp "Responsive Devices, Inc."
 Comment1 ""
@@ -533,7 +533,7 @@ U 1 1 53F6E1A7
 P 15100 5000
 F 0 "C9" H 15100 5100 40  0000 L CNN
 F 1 "100uF/6V" H 15106 4915 40  0000 L CNN
-F 2 "Capacitors_Tantalum_SMD:TantalC_SizeC_EIA-6032_Reflow" H 15138 4850 30  0001 C CNN
+F 2 "tapmatrix:EEE-0JA101WR" H 15138 4850 30  0001 C CNN
 F 3 "" H 15100 5000 60  0000 C CNN
 	1    15100 5000
 	0    -1   -1   0   
@@ -588,7 +588,7 @@ U 1 1 53F6EFF0
 P 5400 5000
 F 0 "C6" H 5400 5100 40  0000 L CNN
 F 1 "100uF/6V" H 5406 4915 40  0000 L CNN
-F 2 "Capacitors_Tantalum_SMD:TantalC_SizeC_EIA-6032_Reflow" H 5438 4850 30  0001 C CNN
+F 2 "tapmatrix:EEE-0JA101WR" H 5438 4850 30  0001 C CNN
 F 3 "" H 5400 5000 60  0000 C CNN
 	1    5400 5000
 	1    0    0    -1  
@@ -654,7 +654,7 @@ U 1 1 53F6F42A
 P 3100 5000
 F 0 "C4" H 3100 5100 40  0000 L CNN
 F 1 "100uF/6V" H 3106 4915 40  0000 L CNN
-F 2 "Capacitors_Tantalum_SMD:TantalC_SizeC_EIA-6032_Reflow" H 3138 4850 30  0001 C CNN
+F 2 "tapmatrix:EEE-0JA101WR" H 3138 4850 30  0001 C CNN
 F 3 "" H 3100 5000 60  0000 C CNN
 	1    3100 5000
 	1    0    0    -1  
@@ -713,12 +713,12 @@ AMP
 Text Notes 11050 5800 0    60   ~ 0
 (VOLUME REMOVED)
 $Comp
-L DS1307 IC1
+L DS1307 U6
 U 1 1 53F71D16
 P 3650 7650
-F 0 "IC1" H 3650 7450 60  0000 C CNN
+F 0 "U6" H 3650 7450 60  0000 C CNN
 F 1 "DS1307" H 3650 7900 60  0000 C CNN
-F 2 "Housings_SOIC:SOIC-8_N" H 3650 7650 60  0001 C CNN
+F 2 "tapmatrix:SOIC-8_N" H 3650 7650 60  0001 C CNN
 F 3 "" H 3650 7650 60  0000 C CNN
 	1    3650 7650
 	1    0    0    -1  
@@ -988,8 +988,6 @@ I2C_SCL
 Wire Wire Line
 	5500 6700 5500 6900
 Wire Wire Line
-	4450 7700 5850 7700
-Wire Wire Line
 	5500 7700 5500 7400
 Connection ~ 5500 7700
 Text Label 5600 7700 0    60   ~ 0
@@ -1249,4 +1247,6 @@ Text Label 5500 2600 0    60   ~ 0
 XP
 Text Label 5500 2700 0    60   ~ 0
 YM
+Wire Wire Line
+	4450 7700 5850 7700
 $EndSCHEMATC
