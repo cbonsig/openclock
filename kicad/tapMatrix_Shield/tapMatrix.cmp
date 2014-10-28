@@ -1,4 +1,4 @@
-Cmp-Mod V01 Created by Cvpcb (2014-08-05 BZR 5054)-product   date = Sun 26 Oct 2014 09:39:25 PM PDT
+Cmp-Mod V01 Created by Cvpcb (2014-08-05 BZR 5054)-product   date = Mon 27 Oct 2014 10:25:28 PM PDT
 
 BeginCmp
 TimeStamp = /53F7C57F;
@@ -11,21 +11,21 @@ BeginCmp
 TimeStamp = /53F6F4A8;
 Reference = C1;
 ValeurCmp = 0.1uF;
-IdModule  = Capacitors_SMD:c_0603;
+IdModule  = tapmatrix:C_0603;
 EndCmp
 
 BeginCmp
 TimeStamp = /53F6F305;
 Reference = C2;
 ValeurCmp = 0.1uF;
-IdModule  = Capacitors_SMD:c_0603;
+IdModule  = tapmatrix:C_0603;
 EndCmp
 
 BeginCmp
 TimeStamp = /53F6F384;
 Reference = C3;
 ValeurCmp = 0.1uF;
-IdModule  = Capacitors_SMD:c_0603;
+IdModule  = tapmatrix:C_0603;
 EndCmp
 
 BeginCmp
@@ -39,7 +39,7 @@ BeginCmp
 TimeStamp = /53F6F1E5;
 Reference = C5;
 ValeurCmp = 0.1uF;
-IdModule  = Capacitors_SMD:c_0603;
+IdModule  = tapmatrix:C_0603;
 EndCmp
 
 BeginCmp
@@ -53,14 +53,14 @@ BeginCmp
 TimeStamp = /53F6CADB;
 Reference = C7;
 ValeurCmp = 0.1uF;
-IdModule  = Capacitors_SMD:c_0603;
+IdModule  = tapmatrix:C_0603;
 EndCmp
 
 BeginCmp
 TimeStamp = /53F6CF04;
 Reference = C8;
 ValeurCmp = 0.01uF;
-IdModule  = Capacitors_SMD:c_0603;
+IdModule  = tapmatrix:C_0603;
 EndCmp
 
 BeginCmp
@@ -130,35 +130,35 @@ BeginCmp
 TimeStamp = /53F81CD9;
 Reference = R1;
 ValeurCmp = R;
-IdModule  = Resistors_SMD:R_0603;
+IdModule  = tapmatrix:R_0603;
 EndCmp
 
 BeginCmp
 TimeStamp = /53F81E1C;
 Reference = R2;
 ValeurCmp = R;
-IdModule  = Resistors_SMD:R_0603;
+IdModule  = tapmatrix:R_0603;
 EndCmp
 
 BeginCmp
 TimeStamp = /53F6CDB0;
 Reference = R3;
 ValeurCmp = 100K;
-IdModule  = Resistors_SMD:R_0603;
+IdModule  = tapmatrix:R_0603;
 EndCmp
 
 BeginCmp
 TimeStamp = /53F6CE16;
 Reference = R4;
 ValeurCmp = 1.5K;
-IdModule  = Resistors_SMD:R_0603;
+IdModule  = tapmatrix:R_0603;
 EndCmp
 
 BeginCmp
 TimeStamp = /53F3A864;
 Reference = R5;
 ValeurCmp = 10K;
-IdModule  = Resistors_SMD:R_0603;
+IdModule  = tapmatrix:R_0603;
 EndCmp
 
 BeginCmp
