@@ -1,4 +1,4 @@
-Cmp-Mod V01 Created by Cvpcb (2014-08-05 BZR 5054)-product   date = Mon 27 Oct 2014 10:25:28 PM PDT
+Cmp-Mod V01 Created by Cvpcb (2014-08-05 BZR 5054)-product   date = Mon 27 Oct 2014 10:48:51 PM PDT
 
 BeginCmp
 TimeStamp = /53F7C57F;
@@ -74,42 +74,42 @@ BeginCmp
 TimeStamp = /53F44018;
 Reference = JP1;
 ValeurCmp = 6_PIN_1;
-IdModule  = Pin_Headers:Pin_Header_Straight_1x06;
+IdModule  = tapmatrix:Pin_Header_Straight_1x06;
 EndCmp
 
 BeginCmp
 TimeStamp = /53F443E9;
 Reference = JP2;
 ValeurCmp = 6_PIN_2;
-IdModule  = Pin_Headers:Pin_Header_Straight_1x06;
+IdModule  = tapmatrix:Pin_Header_Straight_1x06;
 EndCmp
 
 BeginCmp
 TimeStamp = /53F44977;
 Reference = JP3;
 ValeurCmp = 8_PIN_1;
-IdModule  = Pin_Headers:Pin_Header_Straight_1x08;
+IdModule  = tapmatrix:Pin_Header_Straight_1x08;
 EndCmp
 
 BeginCmp
 TimeStamp = /53F449E0;
 Reference = JP4;
 ValeurCmp = 8_PIN_2;
-IdModule  = Pin_Headers:Pin_Header_Straight_1x08;
+IdModule  = tapmatrix:Pin_Header_Straight_1x08;
 EndCmp
 
 BeginCmp
 TimeStamp = /5407DC2F;
 Reference = JP5;
 ValeurCmp = 4_PIN_1;
-IdModule  = Pin_Headers:Pin_Header_Straight_1x04;
+IdModule  = tapmatrix:Pin_Header_Straight_1x04;
 EndCmp
 
 BeginCmp
 TimeStamp = /53F6E48F;
 Reference = JP6;
 ValeurCmp = SPKR;
-IdModule  = Pin_Headers:Pin_Header_Straight_1x02;
+IdModule  = tapmatrix:Pin_Header_Straight_1x02;
 EndCmp
 
 BeginCmp
