@@ -1,4 +1,4 @@
-Cmp-Mod V01 Created by Cvpcb (2014-08-05 BZR 5054)-product   date = Mon 27 Oct 2014 10:48:51 PM PDT
+Cmp-Mod V01 Created by Cvpcb (2014-08-05 BZR 5054)-product   date = Mon 27 Oct 2014 11:08:12 PM PDT
 
 BeginCmp
 TimeStamp = /53F7C57F;
@@ -165,7 +165,7 @@ BeginCmp
 TimeStamp = /53F6EC9F;
 Reference = U1;
 ValeurCmp = MCP1700T-3302E/MB;
-IdModule  = Housings_SOT-89:SOT89-3_Housing;
+IdModule  = tapmatrix:SOT89-3_Housing;
 EndCmp
 
 BeginCmp
