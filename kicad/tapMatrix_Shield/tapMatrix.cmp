@@ -1,4 +1,4 @@
-Cmp-Mod V01 Created by Cvpcb (2014-08-05 BZR 5054)-product   date = Mon 27 Oct 2014 11:17:14 PM PDT
+Cmp-Mod V01 Created by Cvpcb (2014-08-05 BZR 5054)-product   date = Thu 30 Oct 2014 09:59:35 PM PDT
 
 BeginCmp
 TimeStamp = /53F7C57F;
@@ -179,7 +179,7 @@ BeginCmp
 TimeStamp = /53F3911B;
 Reference = U3;
 ValeurCmp = 74LS125;
-IdModule  = tapmatrix:SOIC-14_N;
+IdModule  = tapmatrix:SO-14;
 EndCmp
 
 BeginCmp
