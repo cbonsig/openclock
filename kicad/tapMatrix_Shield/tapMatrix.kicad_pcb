@@ -15,7 +15,7 @@
   (page A)
   (title_block
     (title "tapMatrix Shield: Footprint")
-    (date "22 Sep 2014")
+    (date "01 Nov 2014")
     (rev 0.3)
     (company "Responsive Devices Inc")
   )
@@ -74,7 +74,7 @@
     (aux_axis_origin 0 0)
     (visible_elements FFFFFF7F)
     (pcbplotparams
-      (layerselection 0x010f0_80000001)
+      (layerselection 0x010fc_80000001)
       (usegerberextensions true)
       (excludeedgelayer true)
       (linewidth 0.152400)
