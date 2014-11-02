@@ -290,13 +290,13 @@
       (net 7 "Net-(BT1-Pad1)"))
   )
 
-  (module tapmatrix:5103310­-3 (layer F.Cu) (tedit 54547EAE) (tstamp 53FA8280)
+  (module tapmatrix:5103310­-3 (layer F.Cu) (tedit 54547F8B) (tstamp 53FA8280)
     (at 186.69 115.8875 90)
     (path /53F2DDF1)
     (fp_text reference P6 (at 0.508 -3.81 90) (layer F.SilkS) hide
       (effects (font (size 1 1) (thickness 0.15)))
     )
-    (fp_text value LED_MATRIX_HDR (at 0 5.08 90) (layer F.SilkS)
+    (fp_text value LED_MATRIX_HDR (at 0 5.08 90) (layer F.SilkS) hide
       (effects (font (size 1 1) (thickness 0.15)))
     )
     (fp_line (start 3.81 12.7) (end 3.81 11.43) (layer F.SilkS) (width 0.15))
@@ -537,13 +537,13 @@
       (net 5 "Net-(C9-Pad1)"))
   )
 
-  (module tapmatrix:SOIC-8_N (layer F.Cu) (tedit 54547DBB) (tstamp 544DD13A)
+  (module tapmatrix:SOIC-8_N (layer F.Cu) (tedit 54547FAF) (tstamp 544DD13A)
     (at 138.4808 115.1636)
     (descr "module CMS SOJ 8 pins etroit")
     (tags "CMS SOJ")
     (path /53F71D16)
     (attr smd)
-    (fp_text reference U6 (at 0 -0.889) (layer F.SilkS)
+    (fp_text reference U6 (at 4.8768 -0.2032) (layer F.SilkS)
       (effects (font (size 1 1) (thickness 0.15)))
     )
     (fp_text value DS1307 (at 0 1.016) (layer F.SilkS) hide
@@ -1217,13 +1217,13 @@
       (net 43 +3.3V))
   )
 
-  (module tapmatrix:SOT89-3_Housing (layer F.Cu) (tedit 54531F4E) (tstamp 5453267E)
+  (module tapmatrix:SOT89-3_Housing (layer F.Cu) (tedit 54547F9C) (tstamp 5453267E)
     (at 162.7124 127)
     (descr "SOT89-3, Housing,")
     (tags "SOT89-3, Housing,")
     (path /53F6EC9F)
     (attr smd)
-    (fp_text reference U1 (at -0.09906 -4.24942) (layer F.SilkS)
+    (fp_text reference U1 (at 0 -2.8448) (layer F.SilkS)
       (effects (font (size 1 1) (thickness 0.15)))
     )
     (fp_text value MCP1700T-3302E/MB (at -0.20066 4.59994) (layer F.SilkS) hide
