@@ -37,7 +37,7 @@ $Descr B 17000 11000
 encoding utf-8
 Sheet 1 1
 Title "tapMatrix Shield"
-Date "26 Oct 2014"
+Date "23 Nov 2014"
 Rev "0.3"
 Comp "Responsive Devices, Inc."
 Comment1 ""
@@ -296,11 +296,11 @@ F 3 "" H 2900 2650 60  0000 C CNN
 	1    0    0    -1  
 $EndComp
 Text Label 3600 2300 0    60   ~ 0
-MATRIX_DATA
+MATRIX_WR
 Text Label 8350 2000 0    60   ~ 0
 MATRIX_DATA
 Text Label 3600 2200 0    60   ~ 0
-MATRIX_WR
+MATRIX_DATA
 Text Label 8350 1850 0    60   ~ 0
 MATRIX_WR
 Text Label 8350 1550 0    60   ~ 0
