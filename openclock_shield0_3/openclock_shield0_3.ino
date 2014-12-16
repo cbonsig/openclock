@@ -96,6 +96,10 @@
 //               micro SD read confirmed to be working correctly
 //               audio muffled and levels are too low; need to improve amp
 //               DS1307 RTC is not responding, need to investigate why
+//
+// 15 dec 2014 . DS1307 oscillator crystal was missing, and VCC + VBAT nets
+//               were incorrectly joined. Fixed with xacto knife and solder.
+//               no additional changes to code.
 
 // LIBRARIES
 #include <Time.h>         // The Arduino Time library, http://www.arduino.cc/playground/Code/Time
