@@ -1,4 +1,4 @@
-Cmp-Mod V01 Created by Cvpcb (2014-08-05 BZR 5054)-product   date = Sun 23 Nov 2014 06:18:37 PM PST
+Cmp-Mod V01 Created by Cvpcb (2014-12-16 BZR 5324)-product   date = Thursday, December 25, 2014 'AMt' 12:43:16 AM
 
 BeginCmp
 TimeStamp = /53F7C57F;
@@ -113,6 +113,13 @@ IdModule  = tapmatrix:Pin_Header_Straight_1x02;
 EndCmp
 
 BeginCmp
+TimeStamp = /549B7836;
+Reference = JP7;
+ValeurCmp = 6_PIN_3;
+IdModule  = tapmatrix:Pin_Header_Straight_1x06;
+EndCmp
+
+BeginCmp
 TimeStamp = /53F23B9F;
 Reference = P5;
 ValeurCmp = TS_ZIF;
@@ -162,6 +169,13 @@ IdModule  = tapmatrix:R_0603;
 EndCmp
 
 BeginCmp
+TimeStamp = /549B848B;
+Reference = RV1;
+ValeurCmp = POT;
+IdModule  = tapmatrix:TC33X;
+EndCmp
+
+BeginCmp
 TimeStamp = /53F6EC9F;
 Reference = U1;
 ValeurCmp = MCP1700T-3302E/MB;
@@ -185,8 +199,8 @@ EndCmp
 BeginCmp
 TimeStamp = /53F6DDA6;
 Reference = U4;
-ValeurCmp = TL072;
-IdModule  = tapmatrix:SOIC-8_N;
+ValeurCmp = TS922;
+IdModule  = tapmatrix:TS922_SO8;
 EndCmp
 
 BeginCmp
@@ -197,10 +211,10 @@ IdModule  = tapmatrix:114-00841-68;
 EndCmp
 
 BeginCmp
-TimeStamp = /53F71D16;
+TimeStamp = /549B473E;
 Reference = U6;
-ValeurCmp = DS1307;
-IdModule  = tapmatrix:SOIC-8_N;
+ValeurCmp = DS3231;
+IdModule  = tapmatrix:DS3231;
 EndCmp
 
 EndListe

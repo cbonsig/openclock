@@ -160,6 +160,11 @@ K 300mA LDO Regulator Fixed Positive
 F http://www.a-powerusa.com/docs/APE8865-3.pdf
 $ENDCMP
 #
+$CMP POT
+D Potentionmetre
+K R
+$ENDCMP
+#
 $CMP SD_CARD
 D SD Card Memory Card Connector
 $ENDCMP

@@ -1,3 +1,3 @@
 (fp_lib_table
-  (lib (name tapmatrix)(type KiCad)(uri /home/cbonsignore/github/openclock/kicad/tapMatrix_Shield.pretty)(options "")(descr tapMatrix_Shield.pretty))
+  (lib (name tapmatrix)(type KiCad)(uri /Users/cbonsignore/Documents/github/openclock/kicad/tapMatrix_Shield.pretty)(options "")(descr tapMatrix_Shield.pretty))
 )
