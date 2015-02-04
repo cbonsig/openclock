@@ -10,6 +10,11 @@ D 6-PIN HEADER #1 ARDUINO
 K CONN
 $ENDCMP
 #
+$CMP 6_PIN_3
+D 6-PIN HEADER #1 ARDUINO
+K CONN
+$ENDCMP
+#
 $CMP 8_PIN_1
 D 8-PIN HEADER #1 ARDUINO
 K CONN
@@ -152,6 +157,12 @@ $ENDCMP
 #
 $CMP MCP1700T-3302E/MB
 D SOT-89-3 3.3V LDO Regulator
+$ENDCMP
+#
+$CMP MCP1703
+D APE8865N-12-HF-3, 300 mA Low Dropout Voltage Regulator, Fixed Output 1.2V, SOT-23
+K 300mA LDO Regulator Fixed Positive
+F http://www.a-powerusa.com/docs/APE8865-3.pdf
 $ENDCMP
 #
 $CMP MCT1700T

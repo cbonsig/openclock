@@ -159,6 +159,12 @@ $CMP MCP1700T-3302E/MB
 D SOT-89-3 3.3V LDO Regulator
 $ENDCMP
 #
+$CMP MCP1703
+D IC REG LDO 3.3V 0.25A SOT89-3
+K 250mA LDO Regulator 
+F http://ww1.microchip.com/downloads/en/DeviceDoc/22049f.pdf
+$ENDCMP
+#
 $CMP MCT1700T
 D APE8865N-12-HF-3, 300 mA Low Dropout Voltage Regulator, Fixed Output 1.2V, SOT-23
 K 300mA LDO Regulator Fixed Positive

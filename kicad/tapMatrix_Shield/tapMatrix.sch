@@ -37,8 +37,8 @@ $Descr B 17000 11000
 encoding utf-8
 Sheet 1 1
 Title "tapMatrix Shield"
-Date "24 Dec 2014"
-Rev "0.4"
+Date "3 Feb 2015"
+Rev "0.5"
 Comp "Responsive Devices, Inc."
 Comment1 ""
 Comment2 ""
@@ -558,17 +558,6 @@ F 1 "GND" H 15000 6130 30  0001 C CNN
 F 2 "" H 15000 6200 60  0000 C CNN
 F 3 "" H 15000 6200 60  0000 C CNN
 	1    15000 6200
-	1    0    0    -1  
-$EndComp
-$Comp
-L APE8865N-33-HF-3 U1
-U 1 1 53F6EC9F
-P 4200 4850
-F 0 "U1" H 3900 5100 40  0000 C CNN
-F 1 "MCP1700T-3302E/MB" H 4200 5050 40  0000 C CNN
-F 2 "tapmatrix:SOT89-3_Housing" H 4200 5200 35  0001 C CIN
-F 3 "" H 4200 4850 60  0000 C CNN
-	1    4200 4850
 	1    0    0    -1  
 $EndComp
 $Comp
@@ -1173,11 +1162,6 @@ Wire Wire Line
 	12700 4950 12700 5350
 Wire Wire Line
 	14400 5450 15000 5450
-Wire Wire Line
-	3750 4800 3550 4800
-Wire Wire Line
-	4650 4800 5400 4800
-Connection ~ 4650 4800
 Connection ~ 5050 4800
 Wire Wire Line
 	2800 4800 3100 4800
@@ -1247,8 +1231,6 @@ Wire Wire Line
 	5400 5300 5400 5200
 Wire Wire Line
 	4200 5300 5400 5300
-Wire Wire Line
-	4200 5150 4200 5400
 Connection ~ 4200 5300
 Wire Wire Line
 	4650 5200 4650 5300
@@ -1380,4 +1362,22 @@ Text Label 5100 2250 0    60   ~ 0
 I2C_SDA
 Text Label 5100 2350 0    60   ~ 0
 I2C_SCL
+$Comp
+L MCP1703 U1
+U 1 1 54D1B081
+P 4200 4850
+F 0 "U1" H 3900 5100 40  0000 C CNN
+F 1 "MCP1703" H 4200 5050 40  0000 C CNN
+F 2 "tapmatrix:SOT89-3_Housing" H 4200 4950 35  0000 C CIN
+F 3 "" H 4200 4850 60  0000 C CNN
+	1    4200 4850
+	1    0    0    -1  
+$EndComp
+Connection ~ 4650 4800
+Wire Wire Line
+	4650 4800 5400 4800
+Wire Wire Line
+	4200 5150 4200 5400
+Wire Wire Line
+	3750 4800 3550 4800
 $EndSCHEMATC
