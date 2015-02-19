@@ -1,0 +1,220 @@
+Cmp-Mod V01 Created by Cvpcb (2015-01-06 BZR 5261)-product   date = Tuesday, February 03, 2015 'PMt' 09:10:28 PM
+
+BeginCmp
+TimeStamp = /53F7C57F;
+Reference = BT1;
+ValeurCmp = BATTERY;
+IdModule  = tapmatrix:CR2032;
+EndCmp
+
+BeginCmp
+TimeStamp = /53F6F4A8;
+Reference = C1;
+ValeurCmp = 0.1uF;
+IdModule  = tapmatrix:C_0603;
+EndCmp
+
+BeginCmp
+TimeStamp = /53F6F305;
+Reference = C2;
+ValeurCmp = 0.1uF;
+IdModule  = tapmatrix:C_0603;
+EndCmp
+
+BeginCmp
+TimeStamp = /53F6F384;
+Reference = C3;
+ValeurCmp = 0.1uF;
+IdModule  = tapmatrix:C_0603;
+EndCmp
+
+BeginCmp
+TimeStamp = /53F6F42A;
+Reference = C4;
+ValeurCmp = 100uF/6V;
+IdModule  = tapmatrix:EEE-0JA101WR;
+EndCmp
+
+BeginCmp
+TimeStamp = /53F6F1E5;
+Reference = C5;
+ValeurCmp = 0.1uF;
+IdModule  = tapmatrix:C_0603;
+EndCmp
+
+BeginCmp
+TimeStamp = /53F6EFF0;
+Reference = C6;
+ValeurCmp = 100uF/6V;
+IdModule  = tapmatrix:EEE-0JA101WR;
+EndCmp
+
+BeginCmp
+TimeStamp = /53F6CADB;
+Reference = C7;
+ValeurCmp = 0.1uF;
+IdModule  = tapmatrix:C_0603;
+EndCmp
+
+BeginCmp
+TimeStamp = /53F6CF04;
+Reference = C8;
+ValeurCmp = 0.01uF;
+IdModule  = tapmatrix:C_0603;
+EndCmp
+
+BeginCmp
+TimeStamp = /53F6E1A7;
+Reference = C9;
+ValeurCmp = 100uF/6V;
+IdModule  = tapmatrix:EEE-0JA101WR;
+EndCmp
+
+BeginCmp
+TimeStamp = /53F44018;
+Reference = JP1;
+ValeurCmp = 6_PIN_1;
+IdModule  = tapmatrix:Pin_Header_Straight_1x06;
+EndCmp
+
+BeginCmp
+TimeStamp = /53F443E9;
+Reference = JP2;
+ValeurCmp = 6_PIN_2;
+IdModule  = tapmatrix:Pin_Header_Straight_1x06;
+EndCmp
+
+BeginCmp
+TimeStamp = /53F44977;
+Reference = JP3;
+ValeurCmp = 8_PIN_1;
+IdModule  = tapmatrix:Pin_Header_Straight_1x08;
+EndCmp
+
+BeginCmp
+TimeStamp = /53F449E0;
+Reference = JP4;
+ValeurCmp = 8_PIN_2;
+IdModule  = tapmatrix:Pin_Header_Straight_1x08;
+EndCmp
+
+BeginCmp
+TimeStamp = /5407DC2F;
+Reference = JP5;
+ValeurCmp = 4_PIN_1;
+IdModule  = tapmatrix:Pin_Header_Straight_1x04;
+EndCmp
+
+BeginCmp
+TimeStamp = /53F6E48F;
+Reference = JP6;
+ValeurCmp = SPKR;
+IdModule  = tapmatrix:Pin_Header_Straight_1x02;
+EndCmp
+
+BeginCmp
+TimeStamp = /549B7836;
+Reference = JP7;
+ValeurCmp = 6_PIN_3;
+IdModule  = tapmatrix:Pin_Header_Straight_1x06;
+EndCmp
+
+BeginCmp
+TimeStamp = /53F23B9F;
+Reference = P5;
+ValeurCmp = TS_ZIF;
+IdModule  = tapmatrix:SFW4R­5STE1LF;
+EndCmp
+
+BeginCmp
+TimeStamp = /53F2DDF1;
+Reference = P6;
+ValeurCmp = LED_MATRIX_HDR;
+IdModule  = tapmatrix:5103310­-3;
+EndCmp
+
+BeginCmp
+TimeStamp = /53F81CD9;
+Reference = R1;
+ValeurCmp = R;
+IdModule  = tapmatrix:R_0603;
+EndCmp
+
+BeginCmp
+TimeStamp = /53F81E1C;
+Reference = R2;
+ValeurCmp = R;
+IdModule  = tapmatrix:R_0603;
+EndCmp
+
+BeginCmp
+TimeStamp = /53F6CDB0;
+Reference = R3;
+ValeurCmp = 100K;
+IdModule  = tapmatrix:R_0603;
+EndCmp
+
+BeginCmp
+TimeStamp = /53F6CE16;
+Reference = R4;
+ValeurCmp = 1.5K;
+IdModule  = tapmatrix:R_0603;
+EndCmp
+
+BeginCmp
+TimeStamp = /53F3A864;
+Reference = R5;
+ValeurCmp = 10K;
+IdModule  = tapmatrix:R_0603;
+EndCmp
+
+BeginCmp
+TimeStamp = /549B848B;
+Reference = RV1;
+ValeurCmp = POT;
+IdModule  = tapmatrix:TC33X;
+EndCmp
+
+BeginCmp
+TimeStamp = /54D1B081;
+Reference = U1;
+ValeurCmp = MCP1703;
+IdModule  = tapmatrix:SOT89-3_Housing;
+EndCmp
+
+BeginCmp
+TimeStamp = /53F6C019;
+Reference = U2;
+ValeurCmp = MCP4921-E/SN;
+IdModule  = tapmatrix:SOIC-8_N;
+EndCmp
+
+BeginCmp
+TimeStamp = /53F3911B;
+Reference = U3;
+ValeurCmp = 74LS125;
+IdModule  = tapmatrix:SO-14;
+EndCmp
+
+BeginCmp
+TimeStamp = /53F6DDA6;
+Reference = U4;
+ValeurCmp = TS922;
+IdModule  = tapmatrix:TS922_SO8;
+EndCmp
+
+BeginCmp
+TimeStamp = /53F2E748;
+Reference = U5;
+ValeurCmp = SD_CARD;
+IdModule  = tapmatrix:114-00841-68;
+EndCmp
+
+BeginCmp
+TimeStamp = /549B473E;
+Reference = U6;
+ValeurCmp = DS3231;
+IdModule  = tapmatrix:DS3231;
+EndCmp
+
+EndListe

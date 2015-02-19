@@ -1,0 +1,240 @@
+EESchema-DOCLIB  Version 2.0
+#
+$CMP 6_PIN_1
+D 6-PIN HEADER #1 ARDUINO
+K CONN
+$ENDCMP
+#
+$CMP 6_PIN_2
+D 6-PIN HEADER #1 ARDUINO
+K CONN
+$ENDCMP
+#
+$CMP 6_PIN_3
+D 6-PIN HEADER #1 ARDUINO
+K CONN
+$ENDCMP
+#
+$CMP 8_PIN_1
+D 8-PIN HEADER #1 ARDUINO
+K CONN
+$ENDCMP
+#
+$CMP 8_PIN_2
+D 8-PIN HEADER #2 ARDUINO
+K CONN
+$ENDCMP
+#
+$CMP APE8865N-12-HF-3
+D APE8865N-12-HF-3, 300 mA Low Dropout Voltage Regulator, Fixed Output 1.2V, SOT-23
+K 300mA LDO Regulator Fixed Positive
+F http://www.a-powerusa.com/docs/APE8865-3.pdf
+$ENDCMP
+#
+$CMP APE8865N-15-HF-3
+D APE8865N-15-HF-3, 300 mA Low Dropout Voltage Regulator, Fixed Output 1.5V, SOT-23
+K 300mA LDO Regulator Fixed Positive
+F http://www.a-powerusa.com/docs/APE8865-3.pdf
+$ENDCMP
+#
+$CMP APE8865N-16-HF-3
+D APE8865N-16-HF-3, 300 mA Low Dropout Voltage Regulator, Fixed Output 1.6V, SOT-23
+K 300mA LDO Regulator Fixed Positive
+F http://www.a-powerusa.com/docs/APE8865-3.pdf
+$ENDCMP
+#
+$CMP APE8865N-17-HF-3
+D APE8865N-17-HF-3, 300 mA Low Dropout Voltage Regulator, Fixed Output 1.7V, SOT-23
+K 300mA LDO Regulator Fixed Positive
+F http://www.a-powerusa.com/docs/APE8865-3.pdf
+$ENDCMP
+#
+$CMP APE8865N-18-HF-3
+D APE8865N-18-HF-3, 300 mA Low Dropout Voltage Regulator, Fixed Output 1.8V, SOT-23
+K 300mA LDO Regulator Fixed Positive
+F http://www.a-powerusa.com/docs/APE8865-3.pdf
+$ENDCMP
+#
+$CMP APE8865N-19-HF-3
+D APE8865N-19-HF-3, 300 mA Low Dropout Voltage Regulator, Fixed Output 1.9V, SOT-23
+K 300mA LDO Regulator Fixed Positive
+F http://www.a-powerusa.com/docs/APE8865-3.pdf
+$ENDCMP
+#
+$CMP APE8865N-20-HF-3
+D APE8865N-20-HF-3, 300 mA Low Dropout Voltage Regulator, Fixed Output 2.0V, SOT-23
+K 300mA LDO Regulator Fixed Positive
+F http://www.a-powerusa.com/docs/APE8865-3.pdf
+$ENDCMP
+#
+$CMP APE8865N-21-HF-3
+D APE8865N-21-HF-3, 300 mA Low Dropout Voltage Regulator, Fixed Output 2.1V, SOT-23
+K 300mA LDO Regulator Fixed Positive
+F http://www.a-powerusa.com/docs/APE8865-3.pdf
+$ENDCMP
+#
+$CMP APE8865N-22-HF-3
+D APE8865N-22-HF-3, 300 mA Low Dropout Voltage Regulator, Fixed Output 2.2V, SOT-23
+K 300mA LDO Regulator Fixed Positive
+F http://www.a-powerusa.com/docs/APE8865-3.pdf
+$ENDCMP
+#
+$CMP APE8865N-23-HF-3
+D APE8865N-23-HF-3, 300 mA Low Dropout Voltage Regulator, Fixed Output 2.3V, SOT-23
+K 300mA LDO Regulator Fixed Positive
+F http://www.a-powerusa.com/docs/APE8865-3.pdf
+$ENDCMP
+#
+$CMP APE8865N-24-HF-3
+D APE8865N-24-HF-3, 300 mA Low Dropout Voltage Regulator, Fixed Output 2.4V, SOT-23
+K 300mA LDO Regulator Fixed Positive
+F http://www.a-powerusa.com/docs/APE8865-3.pdf
+$ENDCMP
+#
+$CMP APE8865N-25-HF-3
+D APE8865N-25-HF-3, 300 mA Low Dropout Voltage Regulator, Fixed Output 2.5V, SOT-23
+K 300mA LDO Regulator Fixed Positive
+F http://www.a-powerusa.com/docs/APE8865-3.pdf
+$ENDCMP
+#
+$CMP APE8865N-26-HF-3
+D APE8865N-26-HF-3, 300 mA Low Dropout Voltage Regulator, Fixed Output 2.6V, SOT-23
+K 300mA LDO Regulator Fixed Positive
+F http://www.a-powerusa.com/docs/APE8865-3.pdf
+$ENDCMP
+#
+$CMP APE8865N-27-HF-3
+D APE8865N-27-HF-3, 300 mA Low Dropout Voltage Regulator, Fixed Output 2.7V, SOT-23
+K 300mA LDO Regulator Fixed Positive
+F http://www.a-powerusa.com/docs/APE8865-3.pdf
+$ENDCMP
+#
+$CMP APE8865N-28-HF-3
+D APE8865N-28-HF-3, 300 mA Low Dropout Voltage Regulator, Fixed Output 2.8V, SOT-23
+K 300mA LDO Regulator Fixed Positive
+F http://www.a-powerusa.com/docs/APE8865-3.pdf
+$ENDCMP
+#
+$CMP APE8865N-29-HF-3
+D APE8865N-29-HF-3, 300 mA Low Dropout Voltage Regulator, Fixed Output 2.9V, SOT-23
+K 300mA LDO Regulator Fixed Positive
+F http://www.a-powerusa.com/docs/APE8865-3.pdf
+$ENDCMP
+#
+$CMP APE8865N-30-HF-3
+D APE8865N-30-HF-3, 300 mA Low Dropout Voltage Regulator, Fixed Output 3.0V, SOT-23
+K 300mA LDO Regulator Fixed Positive
+F http://www.a-powerusa.com/docs/APE8865-3.pdf
+$ENDCMP
+#
+$CMP APE8865N-31-HF-3
+D APE8865N-31-HF-3, 300 mA Low Dropout Voltage Regulator, Fixed Output 3.1V, SOT-23
+K 300mA LDO Regulator Fixed Positive
+F http://www.a-powerusa.com/docs/APE8865-3.pdf
+$ENDCMP
+#
+$CMP APE8865N-32-HF-3
+D APE8865N-32-HF-3, 300 mA Low Dropout Voltage Regulator, Fixed Output 3.2V, SOT-23
+K 300mA LDO Regulator Fixed Positive
+F http://www.a-powerusa.com/docs/APE8865-3.pdf
+$ENDCMP
+#
+$CMP APE8865N-33-HF-3
+D APE8865N-33-HF-3, 300 mA Low Dropout Voltage Regulator, Fixed Output 3.3V, SOT-23
+K 300mA LDO Regulator Fixed Positive
+F http://www.a-powerusa.com/docs/APE8865-3.pdf
+$ENDCMP
+#
+$CMP ATMEGA168A-A
+D ATMEGA168A, TQFP32, 16k Flash, 1kB SRAM, 512B EEPROM
+K AVR 8bit Microcontroller MegaAVR
+F http://www.atmel.com/images/atmel-8271-8-bit-avr-microcontroller-atmega48a-48pa-88a-88pa-168a-168pa-328-328p_datasheet.pdf
+$ENDCMP
+#
+$CMP ATMEGA168PA-A
+D ATMEGA168PA, TQFP32, 16k Flash, 1kB SRAM, 512B EEPROM
+K AVR 8bit Microcontroller MegaAVR PicoPower
+F http://www.atmel.com/images/atmel-8271-8-bit-avr-microcontroller-atmega48a-48pa-88a-88pa-168a-168pa-328-328p_datasheet.pdf
+$ENDCMP
+#
+$CMP ATMEGA328-A
+D ATMEGA328, TQFP32, 32k Flash, 2kB SRAM, 1kB EEPROM
+K AVR 8bit Microcontroller MegaAVR
+F http://www.atmel.com/images/atmel-8271-8-bit-avr-microcontroller-atmega48a-48pa-88a-88pa-168a-168pa-328-328p_datasheet.pdf
+$ENDCMP
+#
+$CMP ATMEGA328P-A
+D ATMEGA328P, TQFP32, 32k Flash, 2kB SRAM, 1kB EEPROM
+K AVR 8bit Microcontroller MegaAVR PicoPower
+F http://www.atmel.com/images/atmel-8271-8-bit-avr-microcontroller-atmega48a-48pa-88a-88pa-168a-168pa-328-328p_datasheet.pdf
+$ENDCMP
+#
+$CMP ATMEGA48A-A
+D ATMEGA48A, TQFP32, 4k Flash, 512B SRAM, 256B EEPROM
+K AVR 8bit Microcontroller MegaAVR
+F http://www.atmel.com/images/atmel-8271-8-bit-avr-microcontroller-atmega48a-48pa-88a-88pa-168a-168pa-328-328p_datasheet.pdf
+$ENDCMP
+#
+$CMP ATMEGA48PA-A
+D ATMEGA48PA, TQFP32, 4k Flash, 512B SRAM, 256B EEPROM
+K AVR 8bit Microcontroller MegaAVR PicoPower
+F http://www.atmel.com/images/atmel-8271-8-bit-avr-microcontroller-atmega48a-48pa-88a-88pa-168a-168pa-328-328p_datasheet.pdf
+$ENDCMP
+#
+$CMP ATMEGA88A-A
+D ATMEGA88A, TQFP32, 8k Flash, 1kB SRAM, 512B EEPROM
+K AVR 8bit Microcontroller MegaAVR
+F http://www.atmel.com/images/atmel-8271-8-bit-avr-microcontroller-atmega48a-48pa-88a-88pa-168a-168pa-328-328p_datasheet.pdf
+$ENDCMP
+#
+$CMP ATMEGA88PA-A
+D ATMEGA88PA, TQFP32, 8k Flash, 1kB SRAM, 512B EEPROM
+K AVR 8bit Microcontroller MegaAVR PicoPower
+F http://www.atmel.com/images/atmel-8271-8-bit-avr-microcontroller-atmega48a-48pa-88a-88pa-168a-168pa-328-328p_datasheet.pdf
+$ENDCMP
+#
+$CMP BARREL_JACK
+D DC Barrel Jack
+$ENDCMP
+#
+$CMP DIODE
+D Diode simple
+K DEV DIODE
+$ENDCMP
+#
+$CMP DS3231
+D DS3231 Real Time Clock
+K RTC DS3231
+$ENDCMP
+#
+$CMP LED_MATRIX_HDR
+D 8x2 Header for LED Matrix DE-DP14112
+K CONN
+$ENDCMP
+#
+$CMP MCP1700T-3302E/MB
+D SOT-89-3 3.3V LDO Regulator
+$ENDCMP
+#
+$CMP MCP1703
+D IC REG LDO 3.3V 0.25A SOT89-3
+K 250mA LDO Regulator 
+F http://ww1.microchip.com/downloads/en/DeviceDoc/22049f.pdf
+$ENDCMP
+#
+$CMP MCT1700T
+D APE8865N-12-HF-3, 300 mA Low Dropout Voltage Regulator, Fixed Output 1.2V, SOT-23
+K 300mA LDO Regulator Fixed Positive
+F http://www.a-powerusa.com/docs/APE8865-3.pdf
+$ENDCMP
+#
+$CMP POT
+D Potentionmetre
+K R
+$ENDCMP
+#
+$CMP SD_CARD
+D SD Card Memory Card Connector
+$ENDCMP
+#
+#End Doc Library
