@@ -228,6 +228,54 @@ K 300mA LDO Regulator Fixed Positive
 F http://www.a-powerusa.com/docs/APE8865-3.pdf
 $ENDCMP
 #
+$CMP NCP1117ST12T3G
+D NCP1117ST120T3G, 1A Low drop-out regulator, Fixed Output 12V, SOT223
+K REGULATOR LDO 12V
+F http://www.onsemi.com/pub_link/Collateral/NCP1117-D.PDF
+$ENDCMP
+#
+$CMP NCP1117ST15T3G
+D NCP1117ST15T3G, 1A Low drop-out regulator, Fixed Output 1.5V, SOT223
+K REGULATOR LDO 1.5V
+F http://www.onsemi.com/pub_link/Collateral/NCP1117-D.PDF
+$ENDCMP
+#
+$CMP NCP1117ST18T3G
+D NCP1117ST18T3G, 1A Low drop-out regulator, Fixed Output 1.8V, SOT223
+K REGULATOR LDO 1.8V
+F http://www.onsemi.com/pub_link/Collateral/NCP1117-D.PDF
+$ENDCMP
+#
+$CMP NCP1117ST20T3G
+D NCP1117ST20T3G, 1A Low drop-out regulator, Fixed Output 2V, SOT223
+K REGULATOR LDO 2V
+F http://www.onsemi.com/pub_link/Collateral/NCP1117-D.PDF
+$ENDCMP
+#
+$CMP NCP1117ST25T3G
+D NCP1117ST25T3G, 1A Low drop-out regulator, Fixed Output 2.5V, SOT223
+K REGULATOR LDO 2.5V
+F http://www.onsemi.com/pub_link/Collateral/NCP1117-D.PDF
+$ENDCMP
+#
+$CMP NCP1117ST285T3G
+D NCP1117ST285T3G, 1A Low drop-out regulator, Fixed Output 2.85V, SOT223
+K REGULATOR LDO 2.85V
+F http://www.onsemi.com/pub_link/Collateral/NCP1117-D.PDF
+$ENDCMP
+#
+$CMP NCP1117ST33T3G
+D NCP1117ST33T3G, 1A Low drop-out regulator, Fixed Output 3.3V, SOT223
+K REGULATOR LDO 3.3V
+F http://www.onsemi.com/pub_link/Collateral/NCP1117-D.PDF
+$ENDCMP
+#
+$CMP NCP1117ST50T3G
+D NCP1117ST50T3G, 1A Low drop-out regulator, Fixed Output 5V, SOT223
+K REGULATOR LDO 5V
+F http://www.onsemi.com/pub_link/Collateral/NCP1117-D.PDF
+$ENDCMP
+#
 $CMP POT
 D Potentionmetre
 K R
@@ -235,6 +283,11 @@ $ENDCMP
 #
 $CMP SD_CARD
 D SD Card Memory Card Connector
+$ENDCMP
+#
+$CMP SW_PUSH
+D Push Button
+K Switch
 $ENDCMP
 #
 #End Doc Library

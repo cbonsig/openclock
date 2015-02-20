@@ -285,4 +285,9 @@ $CMP SD_CARD
 D SD Card Memory Card Connector
 $ENDCMP
 #
+$CMP SW_PUSH
+D Push Button
+K Switch
+$ENDCMP
+#
 #End Doc Library
