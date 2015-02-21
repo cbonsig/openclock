@@ -1678,4 +1678,6 @@ Wire Wire Line
 Wire Wire Line
 	12200 7700 12200 8300
 Connection ~ 12550 7700
+Text Notes 5750 900  0    60   ~ 0
+to do:\nconsider adding ICSP\nconsider adding some more LED’s for TX/RX, pin 13 (PB5, “SCK”)
 $EndSCHEMATC
