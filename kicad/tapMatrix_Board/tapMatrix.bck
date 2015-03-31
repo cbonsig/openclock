@@ -290,4 +290,8 @@ D Push Button
 K Switch
 $ENDCMP
 #
+$CMP nRF8001
+D nRF8001 Header
+$ENDCMP
+#
 #End Doc Library
