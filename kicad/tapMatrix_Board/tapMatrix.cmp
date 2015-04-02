@@ -1,4 +1,4 @@
-Cmp-Mod V01 Created by Cvpcb (2015-01-06 BZR 5261)-product   date = Tuesday, February 03, 2015 'PMt' 09:10:28 PM
+Cmp-Mod V01 Created by Cvpcb (2014-12-28 BZR 5260)-product   date = Wednesday, April 01, 2015 'PMt' 10:03:36 PM
 
 BeginCmp
 TimeStamp = /53F7C57F;
@@ -71,30 +71,142 @@ IdModule  = tapmatrix:EEE-0JA101WR;
 EndCmp
 
 BeginCmp
-TimeStamp = /53F44018;
+TimeStamp = /54E77D91;
+Reference = C10;
+ValeurCmp = 47uF;
+IdModule  = tapmatrix:CAP_MVA_F55;
+EndCmp
+
+BeginCmp
+TimeStamp = /54E780D4;
+Reference = C11;
+ValeurCmp = 47uF;
+IdModule  = tapmatrix:CAP_MVA_F55;
+EndCmp
+
+BeginCmp
+TimeStamp = /54E68345;
+Reference = C12;
+ValeurCmp = 0.1uF;
+IdModule  = tapmatrix:C_0603;
+EndCmp
+
+BeginCmp
+TimeStamp = /54E802EF;
+Reference = C13;
+ValeurCmp = 0.1uF;
+IdModule  = tapmatrix:C_0603;
+EndCmp
+
+BeginCmp
+TimeStamp = /550831AD;
+Reference = C14;
+ValeurCmp = 0.1uF;
+IdModule  = tapmatrix:C_0603;
+EndCmp
+
+BeginCmp
+TimeStamp = /550891FB;
+Reference = C15;
+ValeurCmp = 47pF;
+IdModule  = tapmatrix:C_0603;
+EndCmp
+
+BeginCmp
+TimeStamp = /55083243;
+Reference = C16;
+ValeurCmp = 47pF;
+IdModule  = tapmatrix:C_0603;
+EndCmp
+
+BeginCmp
+TimeStamp = /5508803B;
+Reference = C17;
+ValeurCmp = 4.7uF;
+IdModule  = tapmatrix:EEE-0JA101WR;
+EndCmp
+
+BeginCmp
+TimeStamp = /55087774;
+Reference = C18;
+ValeurCmp = 0.1uF;
+IdModule  = tapmatrix:C_0603;
+EndCmp
+
+BeginCmp
+TimeStamp = /5507FC5E;
+Reference = C19;
+ValeurCmp = 0.1uF;
+IdModule  = tapmatrix:C_0603;
+EndCmp
+
+BeginCmp
+TimeStamp = /54E63A56;
+Reference = D1;
+ValeurCmp = DIODE;
+IdModule  = tapmatrix:DS16004;
+EndCmp
+
+BeginCmp
+TimeStamp = /54E6B1F8;
+Reference = D2;
+ValeurCmp = LED;
+IdModule  = tapmatrix:D_0603;
+EndCmp
+
+BeginCmp
+TimeStamp = /54E9DE05;
+Reference = D3;
+ValeurCmp = LED;
+IdModule  = tapmatrix:D_0603;
+EndCmp
+
+BeginCmp
+TimeStamp = /55096424;
+Reference = D4;
+ValeurCmp = TXLED;
+IdModule  = tapmatrix:D_0603;
+EndCmp
+
+BeginCmp
+TimeStamp = /55095625;
+Reference = D5;
+ValeurCmp = RXLED;
+IdModule  = tapmatrix:D_0603;
+EndCmp
+
+BeginCmp
+TimeStamp = /55080316;
+Reference = F1;
+ValeurCmp = 500mA;
+IdModule  = tapmatrix:Fuse_MF_MSMF;
+EndCmp
+
+BeginCmp
+TimeStamp = /54E8245D;
 Reference = JP1;
-ValeurCmp = 6_PIN_1;
+ValeurCmp = FTDI;
 IdModule  = tapmatrix:Pin_Header_Straight_1x06;
 EndCmp
 
 BeginCmp
-TimeStamp = /53F443E9;
+TimeStamp = /55198608;
 Reference = JP2;
-ValeurCmp = 6_PIN_2;
+ValeurCmp = nRF8001;
 IdModule  = tapmatrix:Pin_Header_Straight_1x06;
 EndCmp
 
 BeginCmp
-TimeStamp = /53F44977;
+TimeStamp = /54E9424E;
 Reference = JP3;
-ValeurCmp = 8_PIN_1;
+ValeurCmp = ICSP;
 IdModule  = tapmatrix:Pin_Header_Straight_1x08;
 EndCmp
 
 BeginCmp
-TimeStamp = /53F449E0;
+TimeStamp = /551A2015;
 Reference = JP4;
-ValeurCmp = 8_PIN_2;
+ValeurCmp = 4_PIN_2;
 IdModule  = tapmatrix:Pin_Header_Straight_1x08;
 EndCmp
 
@@ -113,10 +225,17 @@ IdModule  = tapmatrix:Pin_Header_Straight_1x02;
 EndCmp
 
 BeginCmp
-TimeStamp = /549B7836;
-Reference = JP7;
-ValeurCmp = 6_PIN_3;
-IdModule  = tapmatrix:Pin_Header_Straight_1x06;
+TimeStamp = /54E63915;
+Reference = P1;
+ValeurCmp = +9V Power;
+IdModule  = tapmatrix:PJ-102AH;
+EndCmp
+
+BeginCmp
+TimeStamp = /5507BC1C;
+Reference = P2;
+ValeurCmp = USB-MINI-B;
+IdModule  = tapmatrix:USBMiniB_UX60_MB_5S8;
 EndCmp
 
 BeginCmp
@@ -169,10 +288,87 @@ IdModule  = tapmatrix:R_0603;
 EndCmp
 
 BeginCmp
+TimeStamp = /54E7442A;
+Reference = R6;
+ValeurCmp = 510;
+IdModule  = tapmatrix:R_0603;
+EndCmp
+
+BeginCmp
+TimeStamp = /54E9DEAE;
+Reference = R7;
+ValeurCmp = 510;
+IdModule  = tapmatrix:R_0603;
+EndCmp
+
+BeginCmp
+TimeStamp = /5507D3DB;
+Reference = R8;
+ValeurCmp = 27;
+IdModule  = tapmatrix:R_0603;
+EndCmp
+
+BeginCmp
+TimeStamp = /5507D8C4;
+Reference = R9;
+ValeurCmp = 27;
+IdModule  = tapmatrix:R_0603;
+EndCmp
+
+BeginCmp
+TimeStamp = /5509762E;
+Reference = R10;
+ValeurCmp = 1K;
+IdModule  = tapmatrix:R_0603;
+EndCmp
+
+BeginCmp
+TimeStamp = /5508F506;
+Reference = R11;
+ValeurCmp = 10K;
+IdModule  = tapmatrix:R_0603;
+EndCmp
+
+BeginCmp
+TimeStamp = /5509798B;
+Reference = R12;
+ValeurCmp = 1K;
+IdModule  = tapmatrix:R_0603;
+EndCmp
+
+BeginCmp
+TimeStamp = /550932B0;
+Reference = R13;
+ValeurCmp = 10K;
+IdModule  = tapmatrix:R_0603;
+EndCmp
+
+BeginCmp
+TimeStamp = /5509562B;
+Reference = R14;
+ValeurCmp = 1K;
+IdModule  = tapmatrix:R_0603;
+EndCmp
+
+BeginCmp
+TimeStamp = /55096A7A;
+Reference = R15;
+ValeurCmp = 1K;
+IdModule  = tapmatrix:R_0603;
+EndCmp
+
+BeginCmp
 TimeStamp = /549B848B;
 Reference = RV1;
 ValeurCmp = POT;
 IdModule  = tapmatrix:TC33X;
+EndCmp
+
+BeginCmp
+TimeStamp = /54E7EA59;
+Reference = SW1;
+ValeurCmp = SW_PUSH;
+IdModule  = tapmatrix:SW_3BU_1000P;
 EndCmp
 
 BeginCmp
@@ -192,7 +388,7 @@ EndCmp
 BeginCmp
 TimeStamp = /53F3911B;
 Reference = U3;
-ValeurCmp = 74LS125;
+ValeurCmp = 74AHC125;
 IdModule  = tapmatrix:SO-14;
 EndCmp
 
@@ -215,6 +411,41 @@ TimeStamp = /549B473E;
 Reference = U6;
 ValeurCmp = DS3231;
 IdModule  = tapmatrix:DS3231;
+EndCmp
+
+BeginCmp
+TimeStamp = /54E65FD5;
+Reference = U7;
+ValeurCmp = NCP1117ST50T3G;
+IdModule  = tapmatrix:SOT223_318H;
+EndCmp
+
+BeginCmp
+TimeStamp = /54E5672B;
+Reference = U8;
+ValeurCmp = ATMEGA328P-A;
+IdModule  = tapmatrix:TQFP-32_7x7mm_Pitch0.8mm;
+EndCmp
+
+BeginCmp
+TimeStamp = /5507F0E2;
+Reference = U9;
+ValeurCmp = FT231XS;
+IdModule  = tapmatrix:SSOP20_FTDI231X;
+EndCmp
+
+BeginCmp
+TimeStamp = /5508EE45;
+Reference = U10;
+ValeurCmp = 2N7002PW;
+IdModule  = tapmatrix:SOT-323;
+EndCmp
+
+BeginCmp
+TimeStamp = /551B3918;
+Reference = X1;
+ValeurCmp = CRYSTAL_SMD;
+IdModule  = tapmatrix:XTAL_CSTCE_V;
 EndCmp
 
 EndListe
