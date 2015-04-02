@@ -1,4 +1,4 @@
-Cmp-Mod V01 Created by Cvpcb (2014-12-28 BZR 5260)-product   date = Wednesday, April 01, 2015 'PMt' 10:03:36 PM
+Cmp-Mod V01 Created by Cvpcb (2014-12-28 BZR 5260)-product   date = Wednesday, April 01, 2015 'PMt' 10:35:46 PM
 
 BeginCmp
 TimeStamp = /53F7C57F;
@@ -193,7 +193,7 @@ BeginCmp
 TimeStamp = /55198608;
 Reference = JP2;
 ValeurCmp = nRF8001;
-IdModule  = tapmatrix:Pin_Header_Straight_1x06;
+IdModule  = tapmatrix:Pin_Header_Straight_1x10;
 EndCmp
 
 BeginCmp

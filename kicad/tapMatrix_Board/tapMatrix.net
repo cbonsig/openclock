@@ -1,7 +1,7 @@
 (export (version D)
   (design
     (source /Users/cbonsignore/Documents/GitHub/openclock/kicad/tapMatrix_Board/tapMatrix.sch)
-    (date "Wednesday, April 01, 2015 'PMt' 10:33:33 PM")
+    (date "Wednesday, April 01, 2015 'PMt' 10:35:11 PM")
     (tool "Eeschema (2014-12-28 BZR 5260)-product"))
   (components
     (comp (ref P5)
