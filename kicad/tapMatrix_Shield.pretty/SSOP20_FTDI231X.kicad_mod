@@ -1,8 +1,8 @@
-(module SSOP20_FTDI231X (layer F.Cu) (tedit 551B86D5)
-  (fp_text reference SSOP20_FTDI231X (at 0.381 -5.715) (layer F.SilkS) hide
+(module SSOP20_FTDI231X (layer F.Cu) (tedit 551E20CC)
+  (fp_text reference U9 (at 0.127 0.127) (layer F.SilkS)
     (effects (font (size 1.5 1.5) (thickness 0.15)))
   )
-  (fp_text value VAL** (at 0.254 6.096) (layer F.SilkS)
+  (fp_text value FT231XS (at 0.254 6.096) (layer F.SilkS) hide
     (effects (font (size 1.5 1.5) (thickness 0.15)))
   )
   (fp_line (start -3.302 2.032) (end -4.572 1.016) (layer F.SilkS) (width 0.15))

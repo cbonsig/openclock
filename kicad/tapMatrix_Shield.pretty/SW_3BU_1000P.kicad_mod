@@ -1,8 +1,8 @@
-(module SW_3BU_1000P (layer F.Cu) (tedit 551B3698)
-  (fp_text reference SW_3BU_1000P (at 0 -2.7) (layer F.SilkS) hide
+(module SW_3BU_1000P (layer F.Cu) (tedit 551E2665)
+  (fp_text reference SW1 (at 0 -2.7) (layer F.SilkS)
     (effects (font (size 1.5 1.5) (thickness 0.15)))
   )
-  (fp_text value VAL** (at 0.1 2.8) (layer F.SilkS)
+  (fp_text value SW_PUSH (at 0.1 2.8) (layer F.SilkS) hide
     (effects (font (size 1.5 1.5) (thickness 0.15)))
   )
   (fp_line (start -1.6 -1.3) (end -1.6 1.3) (layer F.SilkS) (width 0.15))

@@ -1,9 +1,9 @@
-(module EEE-0JA101WR (layer F.Cu) (tedit 551A3DB4)
+(module EEE-0JA101WR (layer F.Cu) (tedit 551E1F67)
   (tags "5MM CAP ALUM 100UF 6.3V 20% SMD")
-  (fp_text reference EEE-0JA101WR (at 0.3 5.5) (layer F.SilkS) hide
+  (fp_text reference C9 (at 0.3 5.5) (layer F.SilkS)
     (effects (font (size 1 1) (thickness 0.15)))
   )
-  (fp_text value VAL** (at 0.5 -4.7) (layer F.SilkS)
+  (fp_text value 100uF/6V (at 0.5 -4.7) (layer F.SilkS) hide
     (effects (font (size 1 1) (thickness 0.15)))
   )
   (fp_line (start 1.143 -3.81) (end 2.413 -3.048) (layer F.SilkS) (width 0.15))

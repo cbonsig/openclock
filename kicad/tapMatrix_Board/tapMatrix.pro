@@ -1,4 +1,4 @@
-update=Sunday, February 08, 2015 'PMt' 02:48:19 PM
+update=Thursday, April 02, 2015 'PMt' 09:45:46 PM
 version=1
 last_client=kicad
 [cvpcb]
@@ -53,6 +53,19 @@ LibName30=valves
 LibName31=tapMatrix
 [general]
 version=1
+[schematic_editor]
+version=1
+PageLayoutDescrFile=
+PlotDirectoryName=
+SubpartIdSeparator=0
+SubpartFirstId=65
+NetFmtName=
+SpiceForceRefPrefix=0
+SpiceUseNetNumbers=0
+RptD_X=0
+RptD_Y=100
+RptLab=1
+LabSize=60
 [pcbnew]
 version=1
 PageLayoutDescrFile=
@@ -73,16 +86,3 @@ SolderMaskMinWidth=0
 DrawSegmentWidth=0.2
 BoardOutlineThickness=0.09999999999999999
 ModuleOutlineThickness=0.15
-[schematic_editor]
-version=1
-PageLayoutDescrFile=
-PlotDirectoryName=
-SubpartIdSeparator=0
-SubpartFirstId=65
-NetFmtName=
-SpiceForceRefPrefix=0
-SpiceUseNetNumbers=0
-RptD_X=0
-RptD_Y=100
-RptLab=1
-LabSize=60

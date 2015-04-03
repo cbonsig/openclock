@@ -1,8 +1,8 @@
-(module CAP_MVA_F55 (layer F.Cu) (tedit 551A338D)
-  (fp_text reference CAP_MVA_F55 (at 0.2 -5.5) (layer F.SilkS) hide
+(module CAP_MVA_F55 (layer F.Cu) (tedit 551E1CB5)
+  (fp_text reference C11 (at 0.2 -5.5) (layer F.SilkS)
     (effects (font (size 1.5 1.5) (thickness 0.15)))
   )
-  (fp_text value VAL** (at 0 5.7) (layer F.SilkS)
+  (fp_text value 47uF (at 0 5.7) (layer F.SilkS) hide
     (effects (font (size 1.5 1.5) (thickness 0.15)))
   )
   (fp_text user - (at 2.7 2.7) (layer F.SilkS)
