@@ -1466,7 +1466,7 @@ U 1 1 54E9424E
 P 13000 7950
 F 0 "JP3" H 13000 8150 50  0000 C CNN
 F 1 "ICSP" H 13000 7750 50  0000 C CNN
-F 2 "tapmatrix:Pin_Header_Straight_1x08" H 13000 6750 60  0001 C CNN
+F 2 "tapmatrix:Pin_Header_Straight_2x03" H 13000 6750 60  0001 C CNN
 F 3 "" H 13000 6750 60  0000 C CNN
 	1    13000 7950
 	1    0    0    -1  
@@ -1894,8 +1894,6 @@ Wire Wire Line
 	6850 5000 6850 5150
 Wire Wire Line
 	8100 5800 8550 5800
-Text Label 8250 5800 0    60   ~ 0
-RESET
 Wire Wire Line
 	6350 5800 7000 5800
 Wire Wire Line
@@ -2339,4 +2337,23 @@ Text Label 11200 7700 0    60   ~ 0
 MATRIX_WR
 Text Label 11200 7800 0    60   ~ 0
 MATRIX_DATA
+$Comp
+L C C?
+U 1 1 551FB47B
+P 8550 5250
+F 0 "C?" H 8550 5350 40  0000 L CNN
+F 1 "0.1uF" H 8556 5165 40  0000 L CNN
+F 2 "tapmatrix:C_0603" H 8588 5100 30  0001 C CNN
+F 3 "" H 8550 5250 60  0000 C CNN
+	1    8550 5250
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	8550 5800 8550 5450
+Wire Wire Line
+	8550 5050 8550 4500
+Wire Wire Line
+	8550 4500 9100 4500
+Text Label 8800 4500 0    60   ~ 0
+RESET
 $EndSCHEMATC
