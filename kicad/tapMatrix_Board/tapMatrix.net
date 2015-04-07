@@ -1,7 +1,7 @@
 (export (version D)
   (design
     (source /Users/cbonsignore/Documents/GitHub/openclock/kicad/tapMatrix_Board/tapMatrix.sch)
-    (date "Friday, April 03, 2015 'PMt' 09:53:11 PM")
+    (date "Monday, April 06, 2015 'PMt' 08:41:58 PM")
     (tool "Eeschema (2015-01-06 BZR 5261)-product"))
   (components
     (comp (ref P5)
@@ -372,7 +372,7 @@
       (tstamp 55198608))
     (comp (ref JP4)
       (value 4_PIN_2)
-      (footprint tapmatrix:Pin_Header_Straight_1x08)
+      (footprint tapmatrix:Pin_Header_Straight_1x04)
       (libsource (lib tapMatrix) (part 4_PIN_2))
       (sheetpath (names /) (tstamps /))
       (tstamp 551A2015))
@@ -396,86 +396,6 @@
       (sheetpath (names /) (tstamps /))
       (tstamp 551FB47B)))
   (libparts
-    (libpart (lib conn) (part BARREL_JACK)
-      (description "DC Barrel Jack")
-      (fields
-        (field (name Reference) CON)
-        (field (name Value) BARREL_JACK))
-      (pins
-        (pin (num 1) (name ~) (type passive))
-        (pin (num 2) (name ~) (type passive))
-        (pin (num 3) (name ~) (type passive))))
-    (libpart (lib device) (part BATTERY)
-      (fields
-        (field (name Reference) BT)
-        (field (name Value) BATTERY))
-      (pins
-        (pin (num 1) (name +) (type passive))
-        (pin (num 2) (name -) (type passive))))
-    (libpart (lib device) (part C)
-      (description "Condensateur non polarise")
-      (footprints
-        (fp SM*)
-        (fp C?)
-        (fp C1-1))
-      (fields
-        (field (name Reference) C)
-        (field (name Value) C))
-      (pins
-        (pin (num 1) (name ~) (type passive))
-        (pin (num 2) (name ~) (type passive))))
-    (libpart (lib device) (part FUSE)
-      (fields
-        (field (name Reference) F)
-        (field (name Value) FUSE))
-      (pins
-        (pin (num 1) (name ~) (type input))
-        (pin (num 2) (name ~) (type input))))
-    (libpart (lib device) (part LED)
-      (footprints
-        (fp LED-3MM)
-        (fp LED-5MM)
-        (fp LED-10MM)
-        (fp LED-0603)
-        (fp LED-0805)
-        (fp LED-1206)
-        (fp LEDV))
-      (fields
-        (field (name Reference) D)
-        (field (name Value) LED))
-      (pins
-        (pin (num 1) (name A) (type passive))
-        (pin (num 2) (name K) (type passive))))
-    (libpart (lib device) (part CP2)
-      (footprints
-        (fp SM*)
-        (fp C?)
-        (fp C1-1))
-      (fields
-        (field (name Reference) C)
-        (field (name Value) CP2))
-      (pins
-        (pin (num 1) (name ~) (type passive))
-        (pin (num 2) (name ~) (type passive))))
-    (libpart (lib device) (part CRYSTAL_SMD)
-      (fields
-        (field (name Reference) X)
-        (field (name Value) CRYSTAL_SMD))
-      (pins
-        (pin (num 1) (name 1) (type passive))
-        (pin (num 2) (name case) (type passive))
-        (pin (num 3) (name 3) (type passive))))
-    (libpart (lib device) (part DIODE)
-      (description "Diode simple")
-      (footprints
-        (fp D?)
-        (fp S*))
-      (fields
-        (field (name Reference) D)
-        (field (name Value) DIODE))
-      (pins
-        (pin (num 1) (name A) (type passive))
-        (pin (num 2) (name K) (type passive))))
     (libpart (lib device) (part POT)
       (description Potentionmetre)
       (fields
@@ -507,26 +427,86 @@
       (pins
         (pin (num 1) (name 1) (type passive))
         (pin (num 2) (name 2) (type passive))))
-    (libpart (lib regul) (part NCP1117ST50T3G)
-      (aliases
-        (alias NCP1117ST12T3G)
-        (alias NCP1117ST15T3G)
-        (alias NCP1117ST18T3G)
-        (alias NCP1117ST20T3G)
-        (alias NCP1117ST25T3G)
-        (alias NCP1117ST285T3G)
-        (alias NCP1117ST33T3G))
-      (description "NCP1117ST50T3G, 1A Low drop-out regulator, Fixed Output 5V, SOT223")
-      (docs http://www.onsemi.com/pub_link/Collateral/NCP1117-D.PDF)
+    (libpart (lib device) (part CP2)
       (footprints
-        (fp SOT223))
+        (fp SM*)
+        (fp C?)
+        (fp C1-1))
       (fields
-        (field (name Reference) U)
-        (field (name Value) NCP1117ST50T3G))
+        (field (name Reference) C)
+        (field (name Value) CP2))
       (pins
-        (pin (num 1) (name GND) (type power_in))
-        (pin (num 2) (name VO) (type power_out))
-        (pin (num 3) (name VI) (type power_in))))
+        (pin (num 1) (name ~) (type passive))
+        (pin (num 2) (name ~) (type passive))))
+    (libpart (lib device) (part BATTERY)
+      (fields
+        (field (name Reference) BT)
+        (field (name Value) BATTERY))
+      (pins
+        (pin (num 1) (name +) (type passive))
+        (pin (num 2) (name -) (type passive))))
+    (libpart (lib device) (part C)
+      (description "Condensateur non polarise")
+      (footprints
+        (fp SM*)
+        (fp C?)
+        (fp C1-1))
+      (fields
+        (field (name Reference) C)
+        (field (name Value) C))
+      (pins
+        (pin (num 1) (name ~) (type passive))
+        (pin (num 2) (name ~) (type passive))))
+    (libpart (lib device) (part CRYSTAL_SMD)
+      (fields
+        (field (name Reference) X)
+        (field (name Value) CRYSTAL_SMD))
+      (pins
+        (pin (num 1) (name 1) (type passive))
+        (pin (num 2) (name case) (type passive))
+        (pin (num 3) (name 3) (type passive))))
+    (libpart (lib device) (part DIODE)
+      (description "Diode simple")
+      (footprints
+        (fp D?)
+        (fp S*))
+      (fields
+        (field (name Reference) D)
+        (field (name Value) DIODE))
+      (pins
+        (pin (num 1) (name A) (type passive))
+        (pin (num 2) (name K) (type passive))))
+    (libpart (lib device) (part FUSE)
+      (fields
+        (field (name Reference) F)
+        (field (name Value) FUSE))
+      (pins
+        (pin (num 1) (name ~) (type input))
+        (pin (num 2) (name ~) (type input))))
+    (libpart (lib device) (part LED)
+      (footprints
+        (fp LED-3MM)
+        (fp LED-5MM)
+        (fp LED-10MM)
+        (fp LED-0603)
+        (fp LED-0805)
+        (fp LED-1206)
+        (fp LEDV))
+      (fields
+        (field (name Reference) D)
+        (field (name Value) LED))
+      (pins
+        (pin (num 1) (name A) (type passive))
+        (pin (num 2) (name K) (type passive))))
+    (libpart (lib conn) (part BARREL_JACK)
+      (description "DC Barrel Jack")
+      (fields
+        (field (name Reference) CON)
+        (field (name Value) BARREL_JACK))
+      (pins
+        (pin (num 1) (name ~) (type passive))
+        (pin (num 2) (name ~) (type passive))
+        (pin (num 3) (name ~) (type passive))))
     (libpart (lib conn) (part USB-MINI-B)
       (aliases
         (alias USB-MICRO-B))
@@ -567,6 +547,26 @@
         (pin (num 6) (name -) (type input))
         (pin (num 7) (name ~) (type output))
         (pin (num 8) (name V+) (type power_in))))
+    (libpart (lib regul) (part NCP1117ST50T3G)
+      (aliases
+        (alias NCP1117ST12T3G)
+        (alias NCP1117ST15T3G)
+        (alias NCP1117ST18T3G)
+        (alias NCP1117ST20T3G)
+        (alias NCP1117ST25T3G)
+        (alias NCP1117ST285T3G)
+        (alias NCP1117ST33T3G))
+      (description "NCP1117ST50T3G, 1A Low drop-out regulator, Fixed Output 5V, SOT223")
+      (docs http://www.onsemi.com/pub_link/Collateral/NCP1117-D.PDF)
+      (footprints
+        (fp SOT223))
+      (fields
+        (field (name Reference) U)
+        (field (name Value) NCP1117ST50T3G))
+      (pins
+        (pin (num 1) (name GND) (type power_in))
+        (pin (num 2) (name VO) (type power_out))
+        (pin (num 3) (name VI) (type power_in))))
     (libpart (lib 74xx) (part 74LS125)
       (description "Quad buffer 3 State out")
       (fields
@@ -653,6 +653,13 @@
         (pin (num 30) (name "(PCINT16/RXD)PD0") (type BiDi))
         (pin (num 31) (name "(PCINT17/TXD)PD1") (type BiDi))
         (pin (num 32) (name "(PCINT18/INT0)PD2") (type BiDi))))
+    (libpart (lib tapMatrix-cache) (part CONN_2)
+      (fields
+        (field (name Reference) P)
+        (field (name Value) CONN_2))
+      (pins
+        (pin (num 1) (name P1) (type passive))
+        (pin (num 2) (name PM) (type passive))))
     (libpart (lib tapMatrix) (part 2N7002PW)
       (fields
         (field (name Reference) U)
@@ -833,14 +840,7 @@
         (pin (num 7) (name RST) (type BiDi))
         (pin (num 8) (name 3Vo) (type BiDi))
         (pin (num 9) (name GND) (type BiDi))
-        (pin (num 10) (name VIN) (type BiDi))))
-    (libpart (lib tapMatrix-cache) (part CONN_2)
-      (fields
-        (field (name Reference) P)
-        (field (name Value) CONN_2))
-      (pins
-        (pin (num 1) (name P1) (type passive))
-        (pin (num 2) (name PM) (type passive)))))
+        (pin (num 10) (name VIN) (type BiDi)))))
   (libraries
     (library (logical device)
       (uri "/Users/cbonsignore/Library/Application Support/kicad/library/device.lib"))

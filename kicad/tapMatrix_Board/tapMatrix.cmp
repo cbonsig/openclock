@@ -1,4 +1,4 @@
-Cmp-Mod V01 Created by Cvpcb (2015-01-06 BZR 5261)-product   date = Thursday, April 02, 2015 'PMt' 11:15:18 PM
+Cmp-Mod V01 Created by Cvpcb (2015-01-06 BZR 5261)-product   date = Monday, April 06, 2015 'PMt' 08:42:09 PM
 
 BeginCmp
 TimeStamp = /53F7C57F;
@@ -141,6 +141,13 @@ IdModule  = tapmatrix:C_0603;
 EndCmp
 
 BeginCmp
+TimeStamp = /551FB47B;
+Reference = C20;
+ValeurCmp = 0.1uF;
+IdModule  = tapmatrix:C_0603;
+EndCmp
+
+BeginCmp
 TimeStamp = /54E63A56;
 Reference = D1;
 ValeurCmp = DIODE;
@@ -207,7 +214,7 @@ BeginCmp
 TimeStamp = /551A2015;
 Reference = JP4;
 ValeurCmp = 4_PIN_2;
-IdModule  = tapmatrix:Pin_Header_Straight_1x08;
+IdModule  = tapmatrix:Pin_Header_Straight_1x04;
 EndCmp
 
 BeginCmp
