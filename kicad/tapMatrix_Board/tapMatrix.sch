@@ -37,7 +37,7 @@ $Descr B 17000 11000
 encoding utf-8
 Sheet 1 1
 Title "tapMatrix Board"
-Date "1 Apr 2015"
+Date "9 Apr 2015"
 Rev "0.5"
 Comp "Responsive Devices, Inc."
 Comment1 ""

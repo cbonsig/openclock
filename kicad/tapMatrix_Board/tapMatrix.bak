@@ -37,7 +37,7 @@ $Descr B 17000 11000
 encoding utf-8
 Sheet 1 1
 Title "tapMatrix Board"
-Date "1 Apr 2015"
+Date "9 Apr 2015"
 Rev "0.5"
 Comp "Responsive Devices, Inc."
 Comment1 ""
@@ -2140,7 +2140,7 @@ U 1 1 551A2015
 P 15550 8000
 F 0 "JP4" H 15550 8400 60  0000 C CNN
 F 1 "4_PIN_2" H 15550 7600 60  0001 C CNN
-F 2 "tapmatrix:Pin_Header_Straight_1x08" H 15550 8000 60  0001 C CNN
+F 2 "tapmatrix:Pin_Header_Straight_1x04" H 15550 8000 60  0001 C CNN
 F 3 "" H 15550 8000 60  0000 C CNN
 	1    15550 8000
 	1    0    0    -1  
